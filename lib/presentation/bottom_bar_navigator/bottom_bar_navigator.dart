@@ -1,4 +1,11 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:hommie/presentation/account_screen/account_screen.dart';
+import 'package:hommie/presentation/cart_screen/cart_screen.dart';
+import 'package:hommie/presentation/home_screen/home_screen.dart';
+import 'package:hommie/presentation/order_list_screen/order_list_screen.dart';
+import 'package:hommie/presentation/search_screen/search_screen.dart';
 import 'dart:math' as math;
 
 import '../../core/utils/color_constant.dart';
@@ -26,15 +33,15 @@ class _BottomBarNavigatorState extends State<BottomBarNavigator> {
   Widget? pageCaller(index) {
     switch (selectedIndex) {
       case 0:
-        return const SizedBox();
+        return const HomeScreen();
       case 1:
-        return const SizedBox();
+        return const CartScreen();
       case 2:
         return const SizedBox();
       case 3:
-        return const SizedBox();
+        return const OrderListScreen();
       case 4:
-        return const SizedBox();
+        return const AccountScreen();
 
       default:
         return const SizedBox();
@@ -58,15 +65,17 @@ class _BottomBarNavigatorState extends State<BottomBarNavigator> {
         onPressed: () {},
         child: InkWell(
           splashColor: ColorConstant.primaryColor,
-          onTap: () {},
-          child: Center(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchScreen(),));
+          },
+          child: const Center(
             child: Icon(Icons.search),
           ),
         ),
       ),
       bottomNavigationBar: isBottomNav == true
           ? BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
+              items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   // icon: ImageIcon(
                   //   AssetImage(ImageConstant.),
@@ -82,7 +91,7 @@ class _BottomBarNavigatorState extends State<BottomBarNavigator> {
                   label: 'Giỏ hàng',
                 ),
                 BottomNavigationBarItem(
-                  label: "Tìn kiếm",
+                  label: "Tìm kiếm",
                   icon: Icon(Icons.add),
                 ),
                 BottomNavigationBarItem(
@@ -107,7 +116,7 @@ class _BottomBarNavigatorState extends State<BottomBarNavigator> {
               ),
               type: BottomNavigationBarType.fixed,
               unselectedItemColor: Colors.grey,
-              unselectedLabelStyle: TextStyle(
+              unselectedLabelStyle: const TextStyle(
                 color: Colors.black,
               ),
               showUnselectedLabels: true,

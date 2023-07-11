@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "179638660806",
+    "project_id": "hommie-b7459",
+    "storage_bucket": "hommie-b7459.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179638660806:android:fd73ab20943f15561e31c7",
+        "android_client_info": {
+          "package_name": "com.example.hommie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "179638660806-7j4q9mktvf8q45psdl3oe3a3h9vg0jca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hommie",
+            "certificate_hash": "42fead352800aec91dd912f06a1af272e506e30f"
+          }
+        },
+        {
+          "client_id": "179638660806-iaadk147ref36g5lneir5488vcdj6kvc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdNSCWLcwl8AsFbukFq76Lb4p0npkULCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "179638660806-iaadk147ref36g5lneir5488vcdj6kvc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

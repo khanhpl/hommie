@@ -20,6 +20,15 @@ class ColorConstant {
 
   static Color primaryColor = fromHex('#e2994a');
 
+  static Color black90026 = fromHex('#26000000');
+
+  static Color yellow900 = fromHex('#fc6e20');
+
+  static Color blueGray700 = fromHex('#4d4867');
+
+  static Color blueGray7007f = fromHex('#7f4d4867');
+
+  static Color lime100 = fromHex('#f5ecdf');
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();
     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
