@@ -1,13 +1,13 @@
-class Datum {
+class Category {
   int id;
   String name;
 
-  Datum({
+  Category({
     required this.id,
     required this.name,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory Category.fromJson(Map<String, dynamic> json) => Category(
     id: json["id"],
     name: json["name"],
   );

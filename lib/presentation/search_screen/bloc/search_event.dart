@@ -1,6 +1,9 @@
 
 
-import 'package:hommie/core/models/list_item/list_item.dart';
+
+import 'package:hommie/core/models/sub_categories/sub_category.dart';
+
+import '../../../core/models/categories/category.dart';
 
 abstract class SearchEvent{}
 class OtherSearchEvent extends SearchEvent{}
@@ -11,13 +14,19 @@ class InputSearchValue extends SearchEvent{
   String searchValue;
 }
 class ChooseCate extends SearchEvent{
-  ChooseCate({required this.cateID});
-   int cateID;
+  ChooseCate({required this.cate});
+
+  Category cate;
 }
 class ChooseSubCate extends SearchEvent{
-  ChooseSubCate({required this.subCateID});
-  int subCateID;
+  ChooseSubCate({required this.subCate});
+  SubCategory subCate;
 }
 class Search extends SearchEvent{
+}
+
+class GetSubCateByCateID extends SearchEvent{
+  GetSubCateByCateID({required this.cateID});
+  int cateID;
 }
 

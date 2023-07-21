@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:hommie/core/models/order/order.dart';
+import 'package:hommie/presentation/cancel_order_screen/widgets/cancel_success_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:hommie/core/app_export.dart';
 
@@ -14,7 +15,7 @@ class OrderBloc {
   final stateController = StreamController<OrderState>();
   String _address = "";
   String _phone = "";
-  int _feeShip = 30000;
+  int _feeShip = 40000;
   String _paymentType = "Trả sau";
   String _promoCode = "null";
 
@@ -34,6 +35,9 @@ class OrderBloc {
       }
       if(event is GetAllOrder){
         getAllOrder();
+      }
+      if(event is CancelOrder){
+        cancelOrder(event.context, event.orderID, event.reason);
       }
     });
   }
@@ -70,7 +74,7 @@ class OrderBloc {
   Future<void> getAllOrder() async {
     try {
       var url = Uri.parse(
-          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/order/get-all-order?userId=${user!.id}");
+          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/order/get-all-my-order?userId=${user!.id}");
         final response = await http.post(
         url,
         headers: <String, String>{
@@ -89,6 +93,29 @@ class OrderBloc {
 
       } else {
         print('fail msg: getAllOrder');
+      }
+    } finally {}
+  }
+  Future<void> cancelOrder(BuildContext context, int orderID, String reason) async {
+    try {
+      var url = Uri.parse(
+          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/order/cancel-order?orderId=$orderID&cancelReason=$reason");
+      final response = await http.put(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $bearerToken'
+        },
+        body: jsonEncode(
+          <String, dynamic>{},
+        ),
+      );
+      print('Test cancelOrder status: ${response.statusCode}');
+      if (response.statusCode.toString() == '200') {
+        showCancelSuccessDialog(context);
+      } else {
+        print('cancelOrder: ');
       }
     } finally {}
   }

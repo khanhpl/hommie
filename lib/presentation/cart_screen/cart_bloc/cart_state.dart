@@ -9,3 +9,7 @@ class ReturnCartItems extends CartState {
 
   CartItems cartItems;
 }
+class ReturnItemDetail extends CartState{
+  ReturnItemDetail({required this.itemDetailID});
+  int itemDetailID;
+}

@@ -1,7 +1,7 @@
-import 'datum.dart';
+import 'category.dart';
 
 class Categories {
-  List<Datum> data;
+  List<Category> data;
   int result;
 
   Categories({
@@ -10,7 +10,7 @@ class Categories {
   });
 
   factory Categories.fromJson(Map<String, dynamic> json) => Categories(
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<Category>.from(json["data"].map((x) => Category.fromJson(x))),
     result: json["result"],
   );
 

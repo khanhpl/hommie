@@ -17,6 +17,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   final _cartBloc = CartBloc();
   CartItems? cartItems;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -31,96 +32,183 @@ class _CartScreenState extends State<CartScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data is ReturnCartItems) {
+              print('Có load data nè');
               cartItems = (snapshot.data as ReturnCartItems).cartItems;
             }
           }
-          return Scaffold(
-            appBar: CustomAppBar(
-              height: getVerticalSize(60),
-              leadingWidth: 45,
-              leading: AppbarImage(
-                  height: getVerticalSize(26),
-                  width: getHorizontalSize(27),
-                  svgPath: ImageConstant.imgCart,
-                  margin: getMargin(top: 10, right: 2),
-                  onTap: () {}),
-              title: Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: getPadding(right: 45),
-                  child: Text(
-                    "Giỏ hàng",
-                    style: AppStyle.txtRobotoRomanBold36,
+          if (snapshot.connectionState == ConnectionState.active) {
+            return Scaffold(
+              appBar: CustomAppBar(
+                height: getVerticalSize(60),
+                leadingWidth: 45,
+                leading: AppbarImage(
+                    height: getVerticalSize(26),
+                    width: getHorizontalSize(27),
+                    svgPath: ImageConstant.imgCart,
+                    margin: getMargin(top: 10, right: 2),
+                    onTap: () {}),
+                title: Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: getPadding(right: 45),
+                    child: Text(
+                      "Giỏ hàng",
+                      style: AppStyle.txtRobotoRomanBold36,
+                    ),
                   ),
                 ),
               ),
-
-            ),
-            floatingActionButton: CustomButton(
-              height: getVerticalSize(
-                54,
+              floatingActionButton: CustomButton(
+                height: getVerticalSize(
+                  54,
+                ),
+                text: "Đặt hàng",
+                margin: getMargin(
+                  left: 20,
+                  top: 18,
+                  right: 20,
+                  bottom: 20,
+                ),
+                onTap: () {
+                  double totalPrice = 0;
+                  for (Datum item in cartItems!.data) {
+                    totalPrice += item.price * item.quantity;
+                  }
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            OrderInformationScreen(totalPrice: totalPrice),
+                      ));
+                },
               ),
-              text: "Đặt hàng",
-
-              margin: getMargin(
-                left: 20,
-                top: 18,
-                right: 20,
-                bottom: 20,
-              ),
-              onTap: (){
-                double totalPrice = 0;
-                for(Datum item in cartItems!.data){
-                  totalPrice += item.price*item.quantity;
-                }
-                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderInformationScreen(totalPrice: totalPrice),));
-              },
-            ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-            body: Material(
-              child: SizedBox(
-                height: height,
-                width: width,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      (cartItems == null || cartItems!.data.isEmpty)
-                          ? Padding(
-                              padding: getPadding(top: 30),
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: ColorConstant.primaryColor,
-                                size: getSize(150),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerFloat,
+              body: Material(
+                child: SizedBox(
+                  height: height,
+                  width: width,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        (cartItems == null || cartItems!.data.isEmpty)
+                            ? Padding(
+                                padding: getPadding(top: 30),
+                                child: Icon(
+                                  Icons.shopping_cart,
+                                  color: ColorConstant.primaryColor,
+                                  size: getSize(150),
+                                ),
+                              )
+                            : Padding(
+                                padding: getPadding(top: 30),
+                                child: ListView.separated(
+                                  physics: const BouncingScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  padding: const EdgeInsets.all(0),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return cartItem(
+                                        context,
+                                        cartItems!.data[index].itemName,
+                                        cartItems!.data[index].material,
+                                        cartItems!.data[index].color,
+                                        cartItems!.data[index].quantity,
+                                        cartItems!.data[index].price,
+                                        cartItems!.data[index].itemImage,
+                                        cartItems!.data[index].cartItemId);
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return SizedBox(
+                                      height: getVerticalSize(20),
+                                    );
+                                  },
+                                  itemCount: cartItems!.data.length,
+                                ),
                               ),
-                            )
-                          : Padding(
-                              padding: getPadding(top: 30),
-                              child: ListView.separated(
-                                physics: const BouncingScrollPhysics(),
-                                scrollDirection: Axis.vertical,
-                                padding: const EdgeInsets.all(0),
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return cartItem(context,  cartItems!.data[index].itemName, cartItems!.data[index].material,
-                                      cartItems!.data[index].color, cartItems!.data[index].quantity, cartItems!.data[index].price, cartItems!.data[index].itemImage);
-                                },
-                                separatorBuilder: (context, index) {
-                                  return SizedBox(
-                                    height: getVerticalSize(20),
-                                  );
-                                },
-                                itemCount: cartItems!.data.length,
-                              ),
-                            ),
-                    ],
+                        SizedBox(height: getVerticalSize(200),),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
+            );
+          } else {
+            return Scaffold(
+              appBar: CustomAppBar(
+                height: getVerticalSize(60),
+                leadingWidth: 45,
+                leading: AppbarImage(
+                    height: getVerticalSize(26),
+                    width: getHorizontalSize(27),
+                    svgPath: ImageConstant.imgCart,
+                    margin: getMargin(top: 10, right: 2),
+                    onTap: () {}),
+                title: Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: getPadding(right: 45),
+                    child: Text(
+                      "Giỏ hàng",
+                      style: AppStyle.txtRobotoRomanBold36,
+                    ),
+                  ),
+                ),
+              ),
+              floatingActionButton: CustomButton(
+                height: getVerticalSize(
+                  54,
+                ),
+                text: "Đặt hàng",
+                margin: getMargin(
+                  left: 20,
+                  top: 18,
+                  right: 20,
+                  bottom: 20,
+                ),
+                onTap: () {
+                  double totalPrice = 0;
+                  for (Datum item in cartItems!.data) {
+                    totalPrice += item.price * item.quantity;
+                  }
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            OrderInformationScreen(totalPrice: totalPrice),
+                      ));
+                },
+              ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerFloat,
+              body: Material(
+                child: SizedBox(
+                  height: height,
+                  width: width,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: getHorizontalSize(50),
+                        ),
+                        Center(
+                          child: LoadingAnimationWidget.discreteCircle(
+                              color: ColorConstant.primaryColor,
+                              size: getSize(50)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
         });
   }
 }

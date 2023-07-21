@@ -8,7 +8,7 @@ import 'package:hommie/presentation/search_screen/bloc/search_event.dart';
 import 'package:hommie/presentation/search_screen/bloc/search_state.dart';
 import 'package:http/http.dart' as http;
 import 'package:hommie/core/app_export.dart';
-import 'package:hommie/core/models/categories/datum.dart' ;
+import 'package:hommie/core/models/categories/category.dart';
 
 class SearchBloc{
   final eventController = StreamController<SearchEvent>();
@@ -26,11 +26,15 @@ class SearchBloc{
       }
       if(event is ChooseCate){
         subCateID = -1;
-        cateID = event.cateID;
-        getSubCategories();
+        cateID = event.cate.id;
+        stateController.sink.add(ReturnSelectedCate(cate: event.cate));
       }
       if(event is ChooseSubCate){
-        subCateID = event.subCateID;
+        subCateID = event.subCate.id;
+        stateController.sink.add(ReturnSelectedSubCate(subCate: event.subCate));
+      }
+      if(event is GetSubCateByCateID){
+        getSubCategories(event.cateID);
       }
       if(event is Search){
         getItems();
@@ -57,7 +61,7 @@ class SearchBloc{
       }
     } finally {}
   }
-  Future<void> getSubCategories() async {
+  Future<void> getSubCategories(int cateID) async {
     try {
       var url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/subcategory/get-all-sub_cate-by?cateId=$cateID");
       final response = await http.get(
@@ -79,6 +83,9 @@ class SearchBloc{
     } finally {}
   }
   Future<void> getItems() async {
+
+    print('Test cateID: $cateID');
+    print('Test sub cateID: $subCateID');
     try {
       Uri url;
       if(searchValue.isEmpty){

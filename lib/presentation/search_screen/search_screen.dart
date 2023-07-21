@@ -1,6 +1,9 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:group_radio_button/group_radio_button.dart';
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/core/models/categories/categories.dart';
+import 'package:hommie/core/models/categories/category.dart';
+import 'package:hommie/core/models/sub_categories/sub_category.dart';
 import 'package:hommie/core/models/list_item/list_item.dart';
 import 'package:hommie/core/models/sub_categories/sub_categories.dart';
 import 'package:hommie/presentation/search_screen/bloc/search_bloc.dart';
@@ -19,10 +22,10 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final _searchBloc = SearchBloc();
   Categories? categories;
-  SubCategories? subCategories;
-  String rsMsg = "";
+  List<SubCategories> listSubCate = [];
   ListItem? listItem;
-  int? spValue;
+  Category? selectedCate;
+  SubCategory? selectedSubCate;
 
   @override
   void initState() {
@@ -33,48 +36,256 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        height: getVerticalSize(60),
-        leadingWidth: 45,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back_ios_new),
-        ),
-        title: AppbarImage(
-            height: getVerticalSize(41),
-            width: getHorizontalSize(100),
-            imagePath: ImageConstant.imgDecorShopPm,
-            margin: getMargin(left: 90)),
-      ),
-      body: StreamBuilder(
+    return StreamBuilder<Object>(
         stream: _searchBloc.stateController.stream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data is ReturnAllCate) {
-              categories = (snapshot.data as ReturnAllCate).categories;
-              subCategories = null;
-              spValue = null;
-              _searchBloc.eventController.sink.add(OtherSearchEvent());
+              categories = null;
+              categories = Categories(
+                  data: [Category(id: -1, name: "Tất cả")], result: 1);
+              categories!.result =
+                  (snapshot.data as ReturnAllCate).categories.data.length + 1;
+              for (Category cate
+                  in (snapshot.data as ReturnAllCate).categories.data) {
+                categories!.data.add(cate);
+              }
+              for (Category cate in categories!.data) {
+                _searchBloc.eventController.sink
+                    .add(GetSubCateByCateID(cateID: cate.id));
+              }
             }
             if (snapshot.data is ReturnSubCategories) {
-              subCategories =
-                  (snapshot.data as ReturnSubCategories).subCategories;
-              _searchBloc.eventController.sink.add(OtherSearchEvent());
+              SubCategories subCategories = SubCategories(data: [
+                SubCategory(id: -1, name: "Tất cả", status: "", cateId: -1)
+              ], result: 1);
+              subCategories.result = (snapshot.data as ReturnSubCategories)
+                  .subCategories
+                  .data
+                  .length;
+              for (SubCategory subCate
+                  in ((snapshot.data as ReturnSubCategories)
+                      .subCategories
+                      .data)) {
+                subCategories.data.add(subCate);
+              }
+              listSubCate.add(subCategories);
             }
             if (snapshot.data is SearchResult) {
               listItem = (snapshot.data as SearchResult).listItem;
             }
+            if (snapshot.data is ReturnSelectedCate) {
+              selectedCate = (snapshot.data as ReturnSelectedCate).cate;
+            }
           }
-          return Material(
-            child: Container(
-              color: ColorConstant.whiteA700,
-              width: width,
-              height: height,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
+          return Scaffold(
+            appBar: CustomAppBar(
+              height: getVerticalSize(60),
+              leadingWidth: 45,
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.arrow_back_ios_new),
+              ),
+              title: AppbarImage(
+                  height: getVerticalSize(41),
+                  width: getHorizontalSize(100),
+                  imagePath: ImageConstant.imgDecorShopPm,
+                  margin: getMargin(left: 90)),
+              actions: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return StatefulBuilder(builder: (context, setState) {
+                            return AlertDialog(
+                              title: Text(
+                                'Danh mục',
+                                style: AppStyle.txtRobotoRomanBold24,
+                              ),
+                              content: Material(
+                                child: Container(
+                                  width: width,
+                                  height: getVerticalSize(400),
+                                  color: Colors.white,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        (categories != null)
+                                            ? SizedBox(
+                                                child: RadioGroup<
+                                                    Category?>.builder(
+                                                  direction: Axis.vertical,
+                                                  groupValue:
+                                                      (selectedCate != null)
+                                                          ? selectedCate
+                                                          : null,
+                                                  horizontalAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  onChanged: (value) =>
+                                                      setState(() {
+                                                    _searchBloc
+                                                        .eventController.sink
+                                                        .add(ChooseCate(
+                                                            cate: value!));
+
+                                                    Navigator.pop(context);
+                                                    if (value.name ==
+                                                        "Tất cả") {
+                                                      // subCategories = null;
+                                                      selectedSubCate = null;
+                                                    } else {
+                                                      if (listSubCate
+                                                          .where((element) {
+                                                            if (element.data
+                                                                    .length >
+                                                                1) {
+                                                              if (element
+                                                                      .data[1]
+                                                                      .cateId ==
+                                                                  value.id) {
+                                                                return true;
+                                                              } else {
+                                                                return false;
+                                                              }
+                                                            } else {
+                                                              return false;
+                                                            }
+                                                          })
+                                                          .toList()
+                                                          .isNotEmpty) {
+                                                        SubCategories
+                                                            subCateDialogData =
+                                                            listSubCate.where(
+                                                                (element) {
+                                                          if (element
+                                                                  .data.length >
+                                                              1) {
+                                                            if (element.data[1]
+                                                                    .cateId ==
+                                                                value.id) {
+                                                              return true;
+                                                            } else {
+                                                              return false;
+                                                            }
+                                                          } else {
+                                                            return false;
+                                                          }
+                                                        }).toList()[0];
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return AlertDialog(
+                                                              title: Text(
+                                                                'Loại sản phẩm',
+                                                                style: AppStyle
+                                                                    .txtRobotoRomanBold24,
+                                                              ),
+                                                              content:
+                                                                  StatefulBuilder(
+                                                                builder: (context,
+                                                                    setState) {
+                                                                  return Material(
+                                                                    child:
+                                                                        Container(
+                                                                      width:
+                                                                          width,
+                                                                      height:
+                                                                          getVerticalSize(
+                                                                              400),
+                                                                      color: Colors
+                                                                          .white,
+                                                                      child:
+                                                                          SingleChildScrollView(
+                                                                        scrollDirection:
+                                                                            Axis.vertical,
+                                                                        child:
+                                                                            Column(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.start,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            SizedBox(
+                                                                              child: RadioGroup<SubCategory?>.builder(
+                                                                                direction: Axis.vertical,
+                                                                                groupValue: (selectedSubCate != null) ? selectedSubCate : null,
+                                                                                horizontalAlignment: MainAxisAlignment.spaceAround,
+                                                                                onChanged: (value) => setState(() {
+                                                                                  selectedSubCate = value;
+                                                                                  _searchBloc.eventController.sink.add(ChooseSubCate(subCate: value!));
+                                                                                  Navigator.pop(context);
+                                                                                }),
+                                                                                items: subCateDialogData.data,
+                                                                                textStyle: TextStyle(
+                                                                                  fontSize: getSize(15),
+                                                                                  color: Colors.black,
+                                                                                ),
+                                                                                itemBuilder: (item) => RadioButtonBuilder(
+                                                                                  item!.name,
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                      } else {
+                                                        print('ko có data');
+                                                      }
+                                                    }
+                                                  }),
+                                                  items: categories!.data,
+                                                  textStyle: TextStyle(
+                                                    fontSize: getSize(15),
+                                                    color: Colors.black,
+                                                  ),
+                                                  itemBuilder: (item) =>
+                                                      RadioButtonBuilder(
+                                                    item!.name,
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          });
+                        },
+                      );
+                    });
+                  },
+                  child: Icon(
+                    Icons.menu,
+                    color: ColorConstant.primaryColor,
+                    size: getSize(30),
+                  ),
+                ),
+              ],
+            ),
+            body: Material(
+              child: Container(
+                color: ColorConstant.whiteA700,
+                width: width,
+                height: height,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,196 +343,63 @@ class _SearchScreenState extends State<SearchScreen> {
                         ],
                       ),
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: getHorizontalSize(185),
-                          child: Padding(
+                    (selectedCate == null)
+                        ? const SizedBox()
+                        : Padding(
                             padding: getPadding(
-                              top: 20,
-                              left: 20,
-                              bottom: 20,
+                              top: 15,
+                              left: 22,
+                              right: 22,
                             ),
-                            child: DropdownButtonFormField2(
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.only(
-                                  left: size.width * 0.015,
-                                  right: size.width * 0.015,
-                                ),
-                                filled: true,
-                                fillColor:
-                                    ColorConstant.primaryColor.withOpacity(0.2),
-                                labelStyle: AppStyle.txtMedium14Black,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.none,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: getPadding(
+                                    right: 15,
+                                  ),
+                                  child: Text(
+                                    "Lọc:",
+                                    style: AppStyle.txtRegular16Black,
                                   ),
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    width: 1,
-                                    color: ColorConstant.primaryColor,
+                                Expanded(
+                                  child: Text(
+                                    "${selectedCate!.name.toString()} -> ${(selectedSubCate != null) ? selectedSubCate!.name.toString() : "Tất cả"}",
+                                    style: AppStyle.txtRobotoRomanMedium16,
                                   ),
                                 ),
-                              ),
-                              hint: Text(
-                                'Danh mục',
-                                overflow: TextOverflow.ellipsis,
-                                style: AppStyle.txtMedium14Black,
-                              ),
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: Colors.grey,
-                              ),
-                              iconSize: size.width * 0.05,
-                              buttonHeight: size.height * 0.07,
-                              buttonPadding: const EdgeInsets.all(0),
-                              dropdownDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              items: (categories != null)
-                                  ? categories!.data
-                                      .map(
-                                        (item) => DropdownMenuItem<int>(
-                                          value: item.id,
-                                          child: SizedBox(
-                                            width: getHorizontalSize(90),
-                                            child: Text(
-                                              item.name,
-                                              style: AppStyle.txtMedium14Black,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList()
-                                  : null,
-                              onChanged: (value) {
-                                setState(() {
-                                  spValue = null;
-                                  subCategories = null;
-                                  _searchBloc.eventController.sink
-                                      .add(ChooseCate(cateID: value!));
-                                });
-                              },
+                              ],
                             ),
                           ),
-                        ),
-                        const Spacer(),
-                        SizedBox(
-                          width: getHorizontalSize(185),
-                          child: Padding(
-                            padding: getPadding(
-                              top: 20,
-                              right: 20,
-                              bottom: 20,
-                            ),
-                            child: DropdownButtonFormField2(
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.only(
-                                  left: size.width * 0.015,
-                                  right: size.width * 0.015,
-                                ),
-                                filled: true,
-                                fillColor:
-                                    ColorConstant.primaryColor.withOpacity(0.2),
-                                labelStyle: AppStyle.txtMedium14Black,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.none,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    width: 1,
-                                    color: ColorConstant.primaryColor,
-                                  ),
-                                ),
-                              ),
-                              hint: Text(
-                                'Loại sp',
-                                overflow: TextOverflow.ellipsis,
-                                style: AppStyle.txtMedium14Black,
-                              ),
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: Colors.grey,
-                              ),
-                              iconSize: size.width * 0.05,
-                              buttonHeight: size.height * 0.07,
-                              buttonPadding: const EdgeInsets.all(0),
-                              dropdownDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              value: (spValue != null) ? spValue : null,
-                              items: (subCategories != null)
-                                  ? subCategories!.data
-                                      .map(
-                                        (item) => DropdownMenuItem<int>(
-                                          value: item.id,
-                                          child: SizedBox(
-                                            width: getHorizontalSize(90),
-                                            child: Text(
-                                              item.name,
-                                              style: AppStyle.txtMedium14Black,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList()
-                                  : null,
-                              onChanged: (value) {
-                                _searchBloc.eventController.sink
-                                    .add(ChooseSubCate(subCateID: value!));
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                     (listItem != null)
                         ? (listItem!.data.isNotEmpty)
-                            ? Container(
-                                padding: getPadding(left: 20, right: 20),
-                                width: width,
-                                height: getHorizontalSize(500),
-                                child: GridView.builder(
-                                    gridDelegate:
-                                        SliverGridDelegateWithMaxCrossAxisExtent(
-                                      maxCrossAxisExtent: getHorizontalSize(
-                                        160,
+                            ? Expanded(
+                                child: Padding(
+                                  padding: getPadding(left: 20, right: 20),
+                                  child: GridView.builder(
+                                      gridDelegate:
+                                          SliverGridDelegateWithMaxCrossAxisExtent(
+                                        maxCrossAxisExtent: getHorizontalSize(
+                                          160,
+                                        ),
+                                        mainAxisExtent: getVerticalSize(
+                                          226,
+                                        ),
+                                        // childAspectRatio: 2 / 3,
+                                        crossAxisSpacing: getVerticalSize(20),
+                                        mainAxisSpacing: getHorizontalSize(30),
                                       ),
-                                      mainAxisExtent: getVerticalSize(
-                                        226,
-                                      ),
-                                      // childAspectRatio: 2 / 3,
-                                      crossAxisSpacing: getVerticalSize(20),
-                                      mainAxisSpacing: getHorizontalSize(30),
-                                    ),
-                                    itemCount: (listItem != null)
-                                        ? listItem!.data.length
-                                        : 0,
-                                    itemBuilder: (BuildContext ctx, index) {
-                                      return CustomItem(
-                                        avgRating: ((listItem!.data[index]
-                                                    .details[0].rate !=
-                                                null)
-                                            ? listItem!
-                                                .data[index].details[0].rate
-                                            : 0),
-                                        imgLink: listItem!
-                                            .data[index].imageList[0].image,
-                                        name: listItem!.data[index].name,
-                                        price: listItem!
-                                            .data[index].details[0].price,
-                                        type:
-                                            "${listItem!.data[index].cateName}/${listItem!.data[index].subName}",
-                                        itemDetailID: listItem!.data[index].details[0].id,
-                                      );
-                                    }),
+                                      itemCount: (listItem != null)
+                                          ? listItem!.data.length
+                                          : 0,
+                                      itemBuilder: (BuildContext ctx, index) {
+                                        return CustomItem(
+                                          item: listItem!.data[index],
+                                        );
+                                      }),
+                                ),
                               )
                             : const SizedBox()
                         : const SizedBox(),
@@ -330,8 +408,6 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
           );
-        },
-      ),
-    );
+        });
   }
 }

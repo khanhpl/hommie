@@ -60,6 +60,13 @@ class AppStyle {
     ),
     fontWeight: FontWeight.w500,
   );
+  static TextStyle txtRobotoRomanMedium16 = TextStyle(
+    color: ColorConstant.primaryColor,
+    fontSize: getFontSize(
+      16,
+    ),
+    fontWeight: FontWeight.w500,
+  );
   static TextStyle txtMedium14White = TextStyle(
     color: Colors.white,
     fontSize: getFontSize(
@@ -88,6 +95,20 @@ class AppStyle {
     ),
     fontWeight: FontWeight.w400,
   );
+  static TextStyle txtRegular14Grey = TextStyle(
+    color: Colors.grey,
+    fontSize: getFontSize(
+      14,
+    ),
+    fontWeight: FontWeight.w400,
+  );
+  static TextStyle txtRegular14Black = TextStyle(
+    color: Colors.black,
+    fontSize: getFontSize(
+      14,
+    ),
+    fontWeight: FontWeight.w400,
+  );
   static TextStyle txtRegular10 = TextStyle(
     color: ColorConstant.blueGray700,
     fontSize: getFontSize(
@@ -105,6 +126,13 @@ class AppStyle {
 
   static TextStyle txtRegular16 = TextStyle(
     color: ColorConstant.whiteA700,
+    fontSize: getFontSize(
+      16,
+    ),
+    fontWeight: FontWeight.w400,
+  );
+  static TextStyle txtRegular16Black = TextStyle(
+    color: Colors.black,
     fontSize: getFontSize(
       16,
     ),

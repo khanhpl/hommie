@@ -74,7 +74,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                         top: 30,
                         right: 20,
                       ),
-                      child: Text("${totalPrice+30000} VNĐ", style: AppStyle.txtMedium14Black,),
+                      child: Text("${totalPrice+40000} VNĐ", style: AppStyle.txtMedium14Black,),
 
                     ),
                   ],

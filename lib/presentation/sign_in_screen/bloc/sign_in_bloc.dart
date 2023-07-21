@@ -32,6 +32,9 @@ class SignInBloc {
       if (event is OnPressSignIn) {
         loginWithAccount(event.context);
       }
+      if(event is LoginWithGoogle){
+        loginWithGoogle(event.context, event.id, event.fullName, event.giveName, event.familyName, event.imgUrl, event.email);
+      }
     });
   }
 
@@ -67,6 +70,53 @@ class SignInBloc {
         Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false,);
       } else {
         showFailDialog(context, "Tài khoản hoặc mật khẩu không đúng");
+      }
+    } finally {}
+  }
+  Future<void> loginWithGoogle(BuildContext context, String id, String fullName, String giveName, String familyName, String imageUrl, String email) async {
+    print('Test id: $id');
+    print('Test fullname: $fullName');
+    print('Test givename: $giveName');
+    print('Test familyname: $familyName');
+    print('Test img: $imageUrl');
+    print('Test email: $email');
+
+
+    try {
+      var url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/user/login-with-google?fcmKey=$deviceID}");
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(
+          <String, String>{
+            "id": id,
+            "fullname": fullName,
+            "givenname": giveName,
+            "familyname": familyName,
+            "imageUrl": imageUrl,
+            "email": email
+          },
+        ),
+      );
+      print('Test loginWithGoogle statuscode: ${response.statusCode}');
+      if (response.statusCode.toString() == '200') {
+        bearerToken = json.decode(response.body)["data"].toString();
+        user = User.fromJson(Jwt.parseJwt(bearerToken));
+        print('Test user: ${user!.name}');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đăng nhập thành công'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false,);
+      } else {
+        showFailDialog(context, "Tài khoản hoặc mật khẩu không đúng");
+        print('Test fail: ${response.body.toString()}');
       }
     } finally {}
   }

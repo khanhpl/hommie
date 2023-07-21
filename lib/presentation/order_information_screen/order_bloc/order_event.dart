@@ -15,3 +15,10 @@ class CreateOrder extends OrderEvent{
   BuildContext context;
 }
 class GetAllOrder extends OrderEvent{}
+
+class CancelOrder extends OrderEvent{
+  CancelOrder({required this.context, required this.orderID, required this.reason});
+  BuildContext context;
+  int orderID;
+  String reason;
+}

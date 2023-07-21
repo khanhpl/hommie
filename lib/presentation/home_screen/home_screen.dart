@@ -223,19 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     : 0,
                                 itemBuilder: (BuildContext ctx, index) {
                                   return CustomItem(
-                                    avgRating: ((listItem!
-                                                .data[index].details[0].rate !=
-                                            null)
-                                        ? listItem!.data[index].details[0].rate
-                                        : 0),
-                                    imgLink: listItem!
-                                        .data[index].imageList[0].image,
-                                    name: listItem!.data[index].name,
-                                    price:
-                                        listItem!.data[index].details[0].price,
-                                    type:
-                                        "${listItem!.data[index].cateName}/${listItem!.data[index].subName}",
-                                    itemDetailID: listItem!.data[index].details[0].id,
+                                    item: listItem!.data[index],
                                   );
                                 }),
                           ),

@@ -19,3 +19,14 @@ class OnPressSignIn extends SignInEvent {
   OnPressSignIn({required this.context});
   BuildContext context;
 }
+
+class LoginWithGoogle extends SignInEvent {
+  LoginWithGoogle({required this.context, required this.id, required this.fullName, required this.giveName, required this.familyName, required this.imgUrl, required this.email});
+  BuildContext context;
+  String id;
+  String fullName;
+  String giveName;
+  String familyName;
+  String imgUrl;
+  String email;
+}

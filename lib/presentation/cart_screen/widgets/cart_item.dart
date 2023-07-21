@@ -1,7 +1,10 @@
 import 'package:hommie/core/app_export.dart';
+import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
+import 'package:hommie/presentation/cart_screen/cart_bloc/cart_event.dart';
 
 StatefulWidget cartItem(BuildContext context, String name, String cate,
-    String subCate, int quantity, double price, String imgLink) {
+    String subCate, int quantity, double price, String imgLink, int cartItemID) {
+  final cartBloc = CartBloc();
   return StatefulBuilder(
     builder: (context, setState) {
       return Container(
@@ -82,10 +85,15 @@ StatefulWidget cartItem(BuildContext context, String name, String cate,
                         color: ColorConstant.primaryColor,
                         borderRadius: BorderRadius.circular(getSize(3)),
                       ),
-                      child: Icon(
-                        Icons.add,
-                        size: getSize(15),
-                        color: ColorConstant.whiteA700,
+                      child: GestureDetector(
+                        onTap: (){
+                          cartBloc.eventController.sink.add(UpdateQuantityCartItem(quantity: quantity+1, cartItemID: cartItemID, context: context));
+                        },
+                        child: Icon(
+                          Icons.add,
+                          size: getSize(15),
+                          color: ColorConstant.whiteA700,
+                        ),
                       ),
                     ),
                     Container(
@@ -104,20 +112,30 @@ StatefulWidget cartItem(BuildContext context, String name, String cate,
                         color: ColorConstant.primaryColor,
                         borderRadius: BorderRadius.circular(getSize(3)),
                       ),
-                      child: Icon(
-                        Icons.remove,
-                        size: getSize(15),
-                        color: ColorConstant.whiteA700,
+                      child: GestureDetector(
+                        onTap: (){
+                          cartBloc.eventController.sink.add(UpdateQuantityCartItem(quantity: quantity-1, cartItemID: cartItemID, context: context));
+                        },
+                        child: Icon(
+                          Icons.remove,
+                          size: getSize(15),
+                          color: ColorConstant.whiteA700,
+                        ),
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: getHorizontalSize(10),),
-                Text("Xóa", style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  color: ColorConstant.primaryColor,
-                  fontSize: getSize(16),
-                ),)
+                GestureDetector(
+                  onTap: (){
+                    cartBloc.eventController.sink.add(DeleteItemFromCart(cartItemID: cartItemID,context: context));
+                  },
+                  child: Text("Xóa", style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: ColorConstant.primaryColor,
+                    fontSize: getSize(16),
+                  ),),
+                ),
               ],
             ),
           ],

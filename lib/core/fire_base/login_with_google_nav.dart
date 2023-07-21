@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hommie/presentation/bottom_bar_navigator/bottom_bar_navigator.dart';
 import 'package:hommie/presentation/sign_in_screen/sign_in_screen.dart';
 
+import 'login_with_google_split_role/login_with_google_split_role.dart';
+
 
 class LoginWithGoogleNav extends StatefulWidget{
   const LoginWithGoogleNav({super.key});
@@ -36,7 +38,7 @@ class _LoginWithGoogleNavState extends State<LoginWithGoogleNav> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const SizedBox();
           } else if (snapshot.hasData) {
-            // return LoginWithGoogleSplitRole(user: FirebaseAuth.instance.currentUser!);
+            return LoginWithGoogleSplitRole(user: FirebaseAuth.instance.currentUser!);
             return BottomBarNavigator(selectedIndex: 0, isBottomNav: true);
           } else if (snapshot.hasError) {
             return const SizedBox();

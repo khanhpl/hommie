@@ -1,13 +1,13 @@
 import 'list_item.dart';
 
-class Datum {
+class OrderData {
   int orderId;
   String orderCode;
   List<ListItem> listItems;
   double totalPrice;
   String orderStatus;
 
-  Datum({
+  OrderData({
     required this.orderId,
     required this.orderCode,
     required this.listItems,
@@ -15,7 +15,7 @@ class Datum {
     required this.orderStatus,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory OrderData.fromJson(Map<String, dynamic> json) => OrderData(
     orderId: json["orderId"],
     orderCode: json["orderCode"],
     listItems: List<ListItem>.from(json["listItems"].map((x) => ListItem.fromJson(x))),

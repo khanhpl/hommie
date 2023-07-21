@@ -1,7 +1,7 @@
-import '../sub_categories/datum.dart';
+import '../sub_categories/sub_category.dart';
 
 class SubCategories {
-  List<Datum> data;
+  List<SubCategory> data;
   int result;
 
   SubCategories({
@@ -10,7 +10,7 @@ class SubCategories {
   });
 
   factory SubCategories.fromJson(Map<String, dynamic> json) => SubCategories(
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<SubCategory>.from(json["data"].map((x) => SubCategory.fromJson(x))),
     result: json["result"],
   );
 

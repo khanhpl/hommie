@@ -35,4 +35,10 @@ class ImageConstant {
   static String imgForgotPassword1 = 'assets/images/img_forgot_password1.png';
 
   static String imgFail = 'assets/images/img_fail.png';
+
+  static String imgConfirm = "assets/images/img_confirm.png";
+
+  static String imgForWard = "assets/images/img_forward.png";
+
+  static String imgSuccess = "assets/images/img_success.png";
 }

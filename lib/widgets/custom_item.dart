@@ -1,16 +1,14 @@
 import 'package:hommie/core/app_export.dart';
+import 'package:hommie/core/models/list_item/data.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_event.dart';
+import 'package:hommie/widgets/item_detail_screen.dart';
 
 // ignore: must_be_immutable
 class CustomItem extends StatelessWidget {
-  CustomItem({super.key, required this.name, required this.avgRating, required this.type, required this.price, required this.imgLink, required this.itemDetailID});
-  String name;
-  double avgRating;
-  String type;
-  double price;
-  String imgLink;
-  int itemDetailID;
+  CustomItem({super.key, required this.item});
+  Data item;
+  double avgRating = 0;
   final _cartBloc = CartBloc();
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,9 @@ class CustomItem extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerRight,
         child: GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ItemDetailScreen(item: item),));
+          },
           child: Container(
             height: getVerticalSize(
               209,
@@ -82,7 +82,7 @@ class CustomItem extends StatelessWidget {
                                   SizedBox(
                                     width: getVerticalSize(100),
                                     child: Text(
-                                      name,
+                                      item.name,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtRegular14Bluegray700,
@@ -121,7 +121,7 @@ class CustomItem extends StatelessWidget {
                                 top: 2,
                               ),
                               child: Text(
-                                type,
+                                "${item.cateName}/${item.subName}",
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtRegular10Bluegray7007f,
@@ -142,7 +142,7 @@ class CustomItem extends StatelessWidget {
                                       top: 12,
                                     ),
                                     child: Text(
-                                      "${price.ceil()} VND",
+                                      "${item.details[0].price.ceil()} VND",
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtRegular14Bluegray700,
@@ -150,7 +150,7 @@ class CustomItem extends StatelessWidget {
                                   ),
                                   GestureDetector(
                                     onTap: (){
-                                      _cartBloc.eventController.sink.add(AddToCart(context: context, quantity: 1, itemDetailID: itemDetailID));
+                                      _cartBloc.eventController.sink.add(AddToCart(context: context, quantity: 1, itemDetailID: item.details[0].id));
                                     },
                                     child: Container(
                                       width: getHorizontalSize(
@@ -224,7 +224,7 @@ class CustomItem extends StatelessWidget {
                             10,
                           ),
                         ),
-                        image: DecorationImage(image: NetworkImage(imgLink), fit: BoxFit.fill),
+                        image: DecorationImage(image: NetworkImage(item.imageList[0].image), fit: BoxFit.fill),
                       ),
                       child: Stack(
                         alignment: Alignment.topCenter,

@@ -1,6 +1,7 @@
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/presentation/account_screen/widgets/avatar_widget.dart';
 import 'package:hommie/presentation/account_screen/widgets/tab_element_widget.dart';
+import 'package:hommie/presentation/feedback_screen/feedback_screen.dart';
 import 'package:hommie/presentation/personal_information_screen/personal_information_screen.dart';
 
 import '../../core/fire_base/provider/google_sign_in_provider.dart';
@@ -57,9 +58,14 @@ class _AccountScreenState extends State<AccountScreen> {
                   ],
                 ),
               ),
-              tabElementWidget(context, "Yêu thích", "", ""),
+              // tabElementWidget(context, "Yêu thích", "", ""),
               tabElementWidget(context, "Lịch sử", "", ""),
-              tabElementWidget(context, "Góp ý", "", ""),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const FeedBackScreen(),));
+                },
+                child: tabElementWidget(context, "Góp ý", "", ""),),
+              tabElementWidget(context, "Đổi mật khẩu", "", ""),
               tabElementWidget(context, "Thông tin ứng dụng", "", ""),
               tabElementWidget(context, "Trò chuyện", "", ""),
               GestureDetector(

@@ -1,8 +1,8 @@
 
-import 'Datum.dart';
+import 'order_data.dart';
 
 class Order {
-  List<Datum> data;
+  List<OrderData> data;
   int result;
 
   Order({
@@ -11,7 +11,7 @@ class Order {
   });
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<OrderData>.from(json["data"].map((x) => OrderData.fromJson(x))),
     result: json["result"],
   );
 

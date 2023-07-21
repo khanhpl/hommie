@@ -159,7 +159,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         controller: _addressController,
                         labelText: "Địa chỉ",
                         textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.phone,
+                        textInputType: TextInputType.streetAddress,
                         validator: (value) {
                           _personalBloc.eventController.sink.add(InputAddress(address: value.toString().trim()));
                           if(value == null || value.toString().trim().isEmpty){
@@ -218,6 +218,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                           textInputAction: TextInputAction.done,
                           textInputType: TextInputType.phone,
                           validator: (value) {
+                            if(value == null || value.toString().trim().isEmpty){
+                              return "Vui lòng không để trống ngày sinh";
+                            }
+                            return null;
                           },
                         ),
                       ),

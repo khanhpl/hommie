@@ -9,10 +9,13 @@ class AppRoutes {
   static const String signInScreen = '/sign_in_screen';
   static const String homeScreen = '/home_screen';
   static const String googleNav = '/login_with_google_nav';
+  static const String cartScreen = '/cart_screen';
   static Map<String, WidgetBuilder> routes = {
     signInScreen: (context) => const SignInScreen(),
     homeScreen: (context) =>
         BottomBarNavigator(selectedIndex: 0, isBottomNav: true),
     googleNav: (context) => const LoginWithGoogleNav(),
+    cartScreen: (context) =>
+        BottomBarNavigator(selectedIndex: 1, isBottomNav: true),
   };
 }

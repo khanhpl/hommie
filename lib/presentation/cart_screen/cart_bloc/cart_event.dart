@@ -9,3 +9,18 @@ class AddToCart extends CartEvent{
   int itemDetailID;
 }
 class ViewCart extends CartEvent{}
+class DeleteItemFromCart extends CartEvent{
+  DeleteItemFromCart({required this.cartItemID, required this.context});
+  BuildContext context;
+  int cartItemID;
+}
+class UpdateQuantityCartItem extends CartEvent{
+  UpdateQuantityCartItem({required this.quantity, required this.cartItemID, required this.context});
+  BuildContext context;
+  int quantity;
+  int cartItemID;
+}
+class ChooseItemDetail extends CartEvent{
+  ChooseItemDetail({required this.itemDetailID});
+  int itemDetailID;
+}

@@ -1,6 +1,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hommie/presentation/sign_in_screen/bloc/sign_in_bloc.dart';
+import 'package:hommie/presentation/sign_in_screen/bloc/sign_in_event.dart';
 
 // ignore: must_be_immutable
 class LoginWithGoogleSplitRole extends StatefulWidget {
@@ -19,14 +21,13 @@ class _LoginWithGoogleSplitRoleState extends State<LoginWithGoogleSplitRole> {
 
   _LoginWithGoogleSplitRoleState({required this.user});
 
-  // final _forgotBloc = AuthenBloc();
+  final _signInBloc = SignInBloc();
 
   @override
   void initState() {
     super.initState();
     // TODO: implement initState
-    // _forgotBloc.eventController.sink.add(LoginWithGoogle(user.email.toString(),
-    //     user.displayName.toString(), "", "", globals.deviceID, context));
+    _signInBloc.eventController.sink.add(LoginWithGoogle(context: context, id: user.uid, fullName: user.displayName!.toString(), giveName: "", familyName: "", imgUrl: user.photoURL!.toString(), email: user.email!.toString()));
   }
 
   @override
