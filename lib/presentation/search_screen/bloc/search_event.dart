@@ -23,6 +23,8 @@ class ChooseSubCate extends SearchEvent{
   SubCategory subCate;
 }
 class Search extends SearchEvent{
+  Search({required this.searchValue});
+  String searchValue;
 }
 
 class GetSubCateByCateID extends SearchEvent{

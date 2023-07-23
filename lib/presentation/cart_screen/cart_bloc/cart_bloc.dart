@@ -32,8 +32,7 @@ class CartBloc {
         updateItemFromCart(event.cartItemID, event.quantity, event.context);
       }
       if(event is ChooseItemDetail){
-        print('Test ${event.itemDetailID}');
-        stateController.sink.add(ReturnItemDetail(itemDetailID: event.itemDetailID));
+        stateController.sink.add(ReturnItemDetail(itemDetail: event.itemDetail));
       }
     });
   }

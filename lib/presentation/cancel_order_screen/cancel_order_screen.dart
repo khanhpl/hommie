@@ -56,7 +56,7 @@ class _CancelOrderScreenState extends State<CancelOrderScreen> {
         ),
         onTap: (){
           String content = "$groupValue - ${noteController.text}";
-          showConfirmCancelBookingDialog(context, orderID, content);
+          showConfirmCancelOrderDialog(context, orderID, content);
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

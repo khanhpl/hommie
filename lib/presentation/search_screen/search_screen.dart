@@ -26,7 +26,7 @@ class _SearchScreenState extends State<SearchScreen> {
   ListItem? listItem;
   Category? selectedCate;
   SubCategory? selectedSubCate;
-
+  final searchValueController = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
@@ -301,7 +301,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           CustomTextFormField2(
                             hintText: "Tìm kiếm",
                             focusNode: FocusNode(),
-                            controller: null,
+                            controller: searchValueController,
                             width: 250,
                             margin: getMargin(
                               left: 20,
@@ -330,7 +330,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   ),
                                   onPressed: () {
                                     _searchBloc.eventController.sink
-                                        .add(Search());
+                                        .add(Search(searchValue: searchValueController.text.trim()));
                                   },
                                   child: Text(
                                     "Tìm kiếm",

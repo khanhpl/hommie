@@ -2,6 +2,7 @@
 
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/core/models/list_item/data.dart';
+import 'package:hommie/core/models/list_item/detail_item.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_state.dart';
 import 'package:hommie/widgets/option_widget.dart';
@@ -21,18 +22,15 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
 
   Data item;
   final _cartBloc = CartBloc();
-  int selectedItem = 0;
+  Detail? selectedItem;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Object>(
       stream: _cartBloc.stateController.stream,
       builder: (context, snapshot) {
-        print('Test data: ${snapshot.toString()}');
           if(snapshot.hasData){
-          print('Có vô luôn');
             if(snapshot.data is ReturnItemDetail){
-            selectedItem = (snapshot.data as ReturnItemDetail).itemDetailID;
-            print('Test id: ${selectedItem}');
+            selectedItem = (snapshot.data as ReturnItemDetail).itemDetail;
           }
         }
         return Scaffold(
@@ -76,7 +74,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
             onTap: () {
               if(selectedItem != 0){
                 _cartBloc.eventController.sink.add(AddToCart(
-                    context: context, quantity: 1, itemDetailID: selectedItem));
+                    context: context, quantity: 1, itemDetailID: selectedItem!.id));
               }else{
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -132,7 +130,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "${MoneyFormatter(amount: item.details[0].price).output.withoutFractionDigits} VNĐ",
+                                "${MoneyFormatter(amount: (selectedItem != null) ? selectedItem!.price : item.details[0].price).output.withoutFractionDigits} VNĐ",
                                 style: AppStyle.txtRobotoRomanMedium16,
                                 maxLines: null,
                               ),
@@ -203,10 +201,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                   itemBuilder: (BuildContext ctx, index) {
                                     return GestureDetector(
                                       onTap: (){
-                                        _cartBloc.eventController.sink.add(ChooseItemDetail(itemDetailID: item.details[index].id));
+                                        _cartBloc.eventController.sink.add(ChooseItemDetail(itemDetail: item.details[index]));
                                       },
                                       child: optionWidget(
-                                          context, item.details[index], selectedItem),
+                                          context, item.details[index], (selectedItem == null) ? 0 : selectedItem!.id),
                                     );
                                   }),
                             ),

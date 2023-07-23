@@ -3,9 +3,14 @@ import 'package:hommie/core/models/list_item/list_item.dart';
 import 'package:hommie/presentation/home_screen/bloc/home_bloc.dart';
 import 'package:hommie/presentation/home_screen/bloc/home_event.dart';
 import 'package:hommie/presentation/home_screen/bloc/home_state.dart';
+import 'package:hommie/presentation/promotion_screen/bloc/promo_bloc.dart';
+import 'package:hommie/presentation/promotion_screen/bloc/promo_event.dart';
+import 'package:hommie/presentation/promotion_screen/bloc/promo_state.dart';
+import 'package:hommie/presentation/promotion_screen/promotion_screen.dart';
 import 'package:hommie/widgets/custom_item.dart';
 
 import '../../core/app_export.dart';
+import '../../core/models/promo/promo_data.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -19,13 +24,15 @@ class _HomeScreenState extends State<HomeScreen> {
       List.generate(4, (index) => {"id": index, "name": "Product $index"})
           .toList();
   final _homeBloc = HomeBloc();
+  final promoBloc = PromoBloc();
   ListItem? listItem;
-
+  List<PromoData> listPromo = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _homeBloc.eventController.sink.add(GetAllItems());
+    promoBloc.eventController.sink.add(GetAllPromo());
   }
 
   @override
@@ -113,80 +120,162 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           StreamBuilder<Object>(
-                              stream: null,
+                              stream: promoBloc.stateController.stream,
                               builder: (context, snapshot) {
-                                return Container(
-                                  width: width,
-                                  margin: getMarginOrPadding(
-                                    top: 15,
-                                    left: 22,
-                                    right: 22,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        size.height * 0.005),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: ColorConstant.primaryColor
-                                          .withOpacity(0.5),
+                                if(snapshot.hasData){
+                                  if(snapshot.data is ReturnAllPromo){
+                                    listPromo = (snapshot.data as ReturnAllPromo).listPromo;
+                                  }
+                                }
+                                if(listPromo.isEmpty){
+                                  return Container(
+                                    width: width,
+                                    margin: getMarginOrPadding(
+                                      top: 15,
+                                      left: 22,
+                                      right: 22,
                                     ),
-                                    color: ColorConstant.primaryColor
-                                        .withOpacity(0.1),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          alignment: Alignment.centerLeft,
-                                          padding: EdgeInsets.only(
-                                              left: size.width * 0.07),
-                                          child: Text(
-                                            "Bạn đang có 0 ưu đãi",
-                                            style:
-                                                AppStyle.txtRobotoRomanMedium14,
-                                          ),
-                                        ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                          size.height * 0.005),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: ColorConstant.primaryColor
+                                            .withOpacity(0.5),
                                       ),
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: Container(
-                                          decoration: DottedDecoration(
-                                            color: ColorConstant.primaryColor,
-                                            strokeWidth: 0.5,
-                                            linePosition: LinePosition.left,
-                                          ),
+                                      color: ColorConstant.primaryColor
+                                          .withOpacity(0.1),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
                                           child: Container(
-                                            alignment: Alignment.center,
+                                            alignment: Alignment.centerLeft,
                                             padding: EdgeInsets.only(
-                                              left: size.width * 0.05,
-                                              right: size.width * 0.05,
-                                              top: size.height * 0.01,
-                                              bottom: size.height * 0.01,
+                                                left: size.width * 0.07),
+                                            child: Text(
+                                              "Bạn đang có 0 ưu đãi",
+                                              style:
+                                              AppStyle.txtRobotoRomanMedium14,
                                             ),
-                                            margin: EdgeInsets.only(
-                                              top: size.height * 0.01,
-                                              bottom: size.height * 0.01,
-                                              left: size.width * 0.03,
-                                              right: size.width * 0.03,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: ColorConstant.primaryColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      size.height * 0.005),
-                                            ),
-                                            child: Text("Xem",
-                                                style:
-                                                    AppStyle.txtMedium14White),
                                           ),
                                         ),
+                                        GestureDetector(
+                                          onTap: () {},
+                                          child: Container(
+                                            decoration: DottedDecoration(
+                                              color: ColorConstant.primaryColor,
+                                              strokeWidth: 0.5,
+                                              linePosition: LinePosition.left,
+                                            ),
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.only(
+                                                left: size.width * 0.05,
+                                                right: size.width * 0.05,
+                                                top: size.height * 0.01,
+                                                bottom: size.height * 0.01,
+                                              ),
+                                              margin: EdgeInsets.only(
+                                                top: size.height * 0.01,
+                                                bottom: size.height * 0.01,
+                                                left: size.width * 0.03,
+                                                right: size.width * 0.03,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: ColorConstant.primaryColor,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    size.height * 0.005),
+                                              ),
+                                              child: Text("Xem",
+                                                  style:
+                                                  AppStyle.txtMedium14White),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }else{
+                                  return Container(
+                                    width: width,
+                                    margin: getMarginOrPadding(
+                                      top: 15,
+                                      left: 22,
+                                      right: 22,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                          size.height * 0.005),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: ColorConstant.primaryColor
+                                            .withOpacity(0.5),
                                       ),
-                                    ],
-                                  ),
-                                );
+                                      color: ColorConstant.primaryColor
+                                          .withOpacity(0.1),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            padding: EdgeInsets.only(
+                                                left: size.width * 0.07),
+                                            child: Text(
+                                              "Bạn đang có ${listPromo.length} ưu đãi",
+                                              style:
+                                              AppStyle.txtRobotoRomanMedium14,
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => PromotionScreen(listPromo: listPromo),));
+                                          },
+                                          child: Container(
+                                            decoration: DottedDecoration(
+                                              color: ColorConstant.primaryColor,
+                                              strokeWidth: 0.5,
+                                              linePosition: LinePosition.left,
+                                            ),
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.only(
+                                                left: size.width * 0.05,
+                                                right: size.width * 0.05,
+                                                top: size.height * 0.01,
+                                                bottom: size.height * 0.01,
+                                              ),
+                                              margin: EdgeInsets.only(
+                                                top: size.height * 0.01,
+                                                bottom: size.height * 0.01,
+                                                left: size.width * 0.03,
+                                                right: size.width * 0.03,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: ColorConstant.primaryColor,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    size.height * 0.005),
+                                              ),
+                                              child: Text("Xem",
+                                                  style:
+                                                  AppStyle.txtMedium14White),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
                               }),
                           Padding(
                             padding: getPadding(

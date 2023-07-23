@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:hive/hive.dart';
 import 'package:hommie/core/models/user/user.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:hommie/widgets/dialog/fail_dialog.dart';
@@ -61,6 +62,8 @@ class SignInBloc {
         user = User.fromJson(Jwt.parseJwt(bearerToken));
         print('Test user: ${user!.name}');
         Jwt.parseJwt(bearerToken);
+        var box = Hive.box('hommieBox');
+        box.put('isGoogleLogin', false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Đăng nhập thành công'),
@@ -74,12 +77,6 @@ class SignInBloc {
     } finally {}
   }
   Future<void> loginWithGoogle(BuildContext context, String id, String fullName, String giveName, String familyName, String imageUrl, String email) async {
-    print('Test id: $id');
-    print('Test fullname: $fullName');
-    print('Test givename: $giveName');
-    print('Test familyname: $familyName');
-    print('Test img: $imageUrl');
-    print('Test email: $email');
 
 
     try {
@@ -106,13 +103,9 @@ class SignInBloc {
         bearerToken = json.decode(response.body)["data"].toString();
         user = User.fromJson(Jwt.parseJwt(bearerToken));
         print('Test user: ${user!.name}');
+        var box = Hive.box('hommieBox');
+        box.put('isGoogleLogin', true);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Đăng nhập thành công'),
-            duration: Duration(seconds: 1),
-          ),
-        );
         Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false,);
       } else {
         showFailDialog(context, "Tài khoản hoặc mật khẩu không đúng");

@@ -142,46 +142,13 @@ class CustomItem extends StatelessWidget {
                                       top: 12,
                                     ),
                                     child: Text(
-                                      "${item.details[0].price.ceil()} VND",
+                                      "${MoneyFormatter(amount: item.details[0].price).output.withoutFractionDigits} VND",
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtRegular14Bluegray700,
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: (){
-                                      _cartBloc.eventController.sink.add(AddToCart(context: context, quantity: 1, itemDetailID: item.details[0].id));
-                                    },
-                                    child: Container(
-                                      width: getHorizontalSize(
-                                        26,
-                                      ),
-                                      margin: getMargin(
-                                        bottom: 2,
-                                      ),
-                                      padding: getPadding(
-                                        left: 8,
-                                        top: 2,
-                                        right: 8,
-                                        bottom: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: ColorConstant.yellow900,
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                          getHorizontalSize(
-                                            8,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        "+",
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.left,
-                                        style: AppStyle.txtRegular16,
-                                      ),
-                                    ),
-                                  ),
+
                                 ],
                               ),
                             ),

@@ -1,16 +1,18 @@
 import 'package:hommie/core/app_export.dart';
+import 'package:hommie/presentation/history_screen/widgets/canceled_panel.dart';
+import 'package:hommie/presentation/history_screen/widgets/completed_panel.dart';
 import 'package:hommie/presentation/order_list_screen/widget/on_boxing_widget.dart';
 import 'package:hommie/presentation/order_list_screen/widget/on_shipping_panel.dart';
 import 'package:hommie/presentation/order_list_screen/widget/pending_widget.dart';
 
-class OrderListScreen extends StatefulWidget {
-  const OrderListScreen({Key? key}) : super(key: key);
+class HistoryScreen extends StatefulWidget {
+  const HistoryScreen({Key? key}) : super(key: key);
 
   @override
-  State<OrderListScreen> createState() => _OrderListScreenState();
+  State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _OrderListScreenState extends State<OrderListScreen> {
+class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -23,7 +25,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
             width: size.width * 0.5,
             child: const Text(
               textAlign: TextAlign.center,
-              "Chờ xử lý",
+              "Hoàn Thành",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 17,
@@ -34,24 +36,14 @@ class _OrderListScreenState extends State<OrderListScreen> {
             width: size.width * 0.5,
             child: const Text(
               textAlign: TextAlign.center,
-              "Đang đóng gói",
+              "Đã Hủy",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 17,
               ),
             ),
           ),
-          SizedBox(
-            width: size.width * 0.5,
-            child: const Text(
-              textAlign: TextAlign.center,
-              "Đang vận chuyển",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 17,
-              ),
-            ),
-          ),
+
 
         ],
         isScrollable: true,
@@ -59,21 +51,27 @@ class _OrderListScreenState extends State<OrderListScreen> {
     }
 
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          automaticallyImplyLeading: false,
-          title: const Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Đơn hàng của bạn",
-            ),
+          toolbarHeight: getVerticalSize(60),
+          leadingWidth: 45,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios_new),
           ),
-          titleTextStyle: TextStyle(
-            fontSize: size.height * 0.028,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
+          title: Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: getPadding(right: 45),
+              child: Text(
+                "Lịch Sử",
+                style: AppStyle.txtRobotoRomanBold24,
+              ),
+            ),
           ),
           bottom: createTabBar(),
         ),
@@ -94,7 +92,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                           SizedBox(
                             height: size.height * 0.03,
                           ),
-                          const PendingPanel(),
+                          const CompletedPanel(),
                         ],
                       ),
                     ),
@@ -112,30 +110,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
                           SizedBox(
                             height: size.height * 0.03,
                           ),
-                          const OnBoxingPanel(),
+                          const CanceledPanel(),
                         ],
                       ),
                     ),
                   ),
                 ),
-                Material(
-                  child: Container(
-                    color: Colors.white,
-                    width: size.width,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: size.height * 0.03,
-                          ),
-                          const OnShippingPanel(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+
 
               ],
             ),

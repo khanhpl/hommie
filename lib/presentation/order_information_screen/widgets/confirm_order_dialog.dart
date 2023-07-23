@@ -2,7 +2,7 @@ import 'package:hommie/core/app_export.dart';
 import 'package:hommie/presentation/order_information_screen/order_bloc/order_bloc.dart';
 import 'package:hommie/presentation/order_information_screen/order_bloc/order_event.dart';
 
-Future<void> showConfirmCancelOrderDialog(BuildContext context,int orderID, String reason) async {
+Future<void> showConfirmOrderDialog(BuildContext context,int feeShip, String paymentType, String address, String phone, String promoCode) async {
   final orderBloc = OrderBloc();
   var size = MediaQuery.of(context).size;
   return showDialog<void>(
@@ -34,7 +34,7 @@ Future<void> showConfirmCancelOrderDialog(BuildContext context,int orderID, Stri
                   height: size.height * 0.03,
                 ),
                 Text(
-                  "Hủy đơn hàng này.",
+                  "Tiến hành đặt hàng.",
                   textAlign: TextAlign.center,
                   style: AppStyle.txtRegular16Black,
                 ),
@@ -91,7 +91,7 @@ Future<void> showConfirmCancelOrderDialog(BuildContext context,int orderID, Stri
                           ),
                         ),
                         onPressed: () {
-                          orderBloc.eventController.sink.add(CancelOrder(context: context, orderID: orderID, reason: reason));
+                          orderBloc.eventController.sink.add(CreateOrder(context: context, feeShip: feeShip, paymentType: paymentType, address: address, phone: phone, promoCode: promoCode));
                         },
                       ),
                     ),

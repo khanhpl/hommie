@@ -107,6 +107,8 @@ Future main() async {
   Hive.initFlutter();
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
+
+  var box = await Hive.openBox('hommieBox');
   await Firebase.initializeApp();
   // Set the background messaging handler early on, as a named top-level function
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

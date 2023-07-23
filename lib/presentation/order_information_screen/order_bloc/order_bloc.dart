@@ -13,25 +13,15 @@ import 'order_state.dart';
 class OrderBloc {
   final eventController = StreamController<OrderEvent>();
   final stateController = StreamController<OrderState>();
-  String _address = "";
-  String _phone = "";
-  int _feeShip = 40000;
-  String _paymentType = "Trả sau";
-  String _promoCode = "null";
 
   OrderBloc() {
     eventController.stream.listen((event) {
       if (event is OtherOrderEvent) {
         stateController.sink.add(OtherOrderState());
       }
-      if (event is InputAddress) {
-        _address = event.address;
-      }
-      if (event is InputPhone) {
-        _phone = event.phone;
-      }
+
       if (event is CreateOrder) {
-        createOrder(event.context);
+        createOrder(event.context, event.feeShip, event.paymentType, event.address, event.phone, event.promoCode);
       }
       if(event is GetAllOrder){
         getAllOrder();
@@ -39,13 +29,17 @@ class OrderBloc {
       if(event is CancelOrder){
         cancelOrder(event.context, event.orderID, event.reason);
       }
+      if(event is ChoosePromo){
+
+        stateController.sink.add(ReturnPromo(promo: event.promo));
+      }
     });
   }
 
-  Future<void> createOrder(BuildContext context) async {
+  Future<void> createOrder(BuildContext context, int feeShip, String paymentType, String address, String phone, String promoCode) async {
     try {
       var url = Uri.parse(
-          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/order/create-order-with-postpaid?userId=${user!.id}&feeShip=$_feeShip&paymentType=$_paymentType&shipAddress=$_address&phoneNumber=$_phone&promoCode=$_promoCode");
+          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/order/create-order-with-postpaid?userId=${user!.id}&feeShip=$feeShip&paymentType=$paymentType&shipAddress=$address&phoneNumber=$phone&promoCode=$promoCode");
       final response = await http.post(
         url,
         headers: <String, String>{

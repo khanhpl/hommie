@@ -1,5 +1,4 @@
 import 'package:hommie/core/app_export.dart';
-import 'package:hommie/core/models/order/order.dart';
 import 'package:hommie/presentation/order_information_screen/order_bloc/order_bloc.dart';
 import 'package:hommie/presentation/order_information_screen/order_bloc/order_event.dart';
 import 'package:hommie/presentation/order_information_screen/order_bloc/order_state.dart';
@@ -7,14 +6,14 @@ import 'package:hommie/presentation/order_information_screen/order_bloc/order_st
 import '../../../core/models/order/order_data.dart';
 import 'order_list_item_widget.dart';
 
-class PendingPanel extends StatefulWidget {
-  const PendingPanel({Key? key}) : super(key: key);
+class OnShippingPanel extends StatefulWidget {
+  const OnShippingPanel({Key? key}) : super(key: key);
 
   @override
-  State<PendingPanel> createState() => _PaidHistoryPanelState();
+  State<OnShippingPanel> createState() => _PaidHistoryPanelState();
 }
 
-class _PaidHistoryPanelState extends State<PendingPanel> {
+class _PaidHistoryPanelState extends State<OnShippingPanel> {
   final _orderBloc = OrderBloc();
   List<OrderData> listOrder = [];
   @override
@@ -33,7 +32,7 @@ class _PaidHistoryPanelState extends State<PendingPanel> {
             if(snapshot.data is ReturnAllOrder){
               listOrder = [];
               for(OrderData order in (snapshot.data as ReturnAllOrder).order.data){
-                if(order.orderStatus == "Chờ Xử Lý"){
+                if(order.orderStatus == "Đang Vận Chuyển"){
                   listOrder.add(order);
                 }
               }
@@ -54,22 +53,22 @@ class _PaidHistoryPanelState extends State<PendingPanel> {
                     (listOrder.isEmpty)
                         ? const SizedBox()
                         : ListView.separated(
-                            padding: const EdgeInsets.all(0),
-                            physics: const BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (context, index) => GestureDetector(
-                              onTap: () {},
-                              child: orderListItemWidget(context, listOrder[index]),
-                            ),
-                            separatorBuilder: (context, index) => Container(
-                              width: size.width,
-                              margin:
-                                  EdgeInsets.only(bottom: size.height * 0.02),
-                              color: Colors.black.withOpacity(0.1),
-                            ),
-                            itemCount: listOrder.length,
-                          ),
+                      padding: const EdgeInsets.all(0),
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {},
+                        child: orderListItemWidget(context, listOrder[index]),
+                      ),
+                      separatorBuilder: (context, index) => Container(
+                        width: size.width,
+                        margin:
+                        EdgeInsets.only(bottom: size.height * 0.02),
+                        color: Colors.black.withOpacity(0.1),
+                      ),
+                      itemCount: listOrder.length,
+                    ),
                   ],
                 ),
               ),

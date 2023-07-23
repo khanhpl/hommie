@@ -15,7 +15,6 @@ class SearchBloc{
   final stateController = StreamController<SearchState>();
   int cateID = -1;
   int subCateID = -1;
-  String searchValue = "";
   SearchBloc(){
     eventController.stream.listen((event) {
       if(event is OtherSearchEvent){
@@ -37,7 +36,7 @@ class SearchBloc{
         getSubCategories(event.cateID);
       }
       if(event is Search){
-        getItems();
+        getItems(event.searchValue);
       }
     });
   }
@@ -82,7 +81,8 @@ class SearchBloc{
       }
     } finally {}
   }
-  Future<void> getItems() async {
+  Future<void> getItems(String searchValue) async {
+    print('Test searchValue: $searchValue');
 
     print('Test cateID: $cateID');
     print('Test sub cateID: $subCateID');
@@ -98,7 +98,7 @@ class SearchBloc{
         if(subCateID != -1){
           url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?subId=$subCateID&keyWord=$searchValue");
         }else{
-          url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?keyWord=a");
+          url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?keyWord=$searchValue");
         }
       }
       final response = await http.post(

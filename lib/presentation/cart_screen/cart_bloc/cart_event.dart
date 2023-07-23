@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hommie/core/models/list_item/detail_item.dart';
 
 abstract class CartEvent{}
 class OtherCartEvent extends CartEvent{}
@@ -21,6 +22,6 @@ class UpdateQuantityCartItem extends CartEvent{
   int cartItemID;
 }
 class ChooseItemDetail extends CartEvent{
-  ChooseItemDetail({required this.itemDetailID});
-  int itemDetailID;
+  ChooseItemDetail({required this.itemDetail});
+  Detail itemDetail;
 }

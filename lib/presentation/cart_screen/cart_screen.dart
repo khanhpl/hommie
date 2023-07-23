@@ -58,7 +58,7 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                 ),
               ),
-              floatingActionButton: CustomButton(
+              floatingActionButton: (cartItems != null && cartItems!.data.isNotEmpty) ? CustomButton(
                 height: getVerticalSize(
                   54,
                 ),
@@ -81,7 +81,7 @@ class _CartScreenState extends State<CartScreen> {
                             OrderInformationScreen(totalPrice: totalPrice),
                       ));
                 },
-              ),
+              ) : const SizedBox(),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,
               body: Material(

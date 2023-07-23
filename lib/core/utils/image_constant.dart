@@ -41,4 +41,10 @@ class ImageConstant {
   static String imgForWard = "assets/images/img_forward.png";
 
   static String imgSuccess = "assets/images/img_success.png";
+
+  static String icMomo = "assets/images/momo_ic.png";
+
+  static String couponDetail = "assets/images/coupon_detail.png";
+
+  static String coupon = "assets/images/coupon.png";
 }
