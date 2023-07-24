@@ -274,7 +274,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     });
                   },
                   child: Icon(
-                    Icons.menu,
+                    Icons.filter_alt_sharp,
                     color: ColorConstant.primaryColor,
                     size: getSize(30),
                   ),

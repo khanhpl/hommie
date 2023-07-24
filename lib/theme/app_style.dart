@@ -31,7 +31,13 @@ class AppStyle {
     ),
     fontWeight: FontWeight.w600,
   );
-
+  static TextStyle txtInterSemiBold12Pr = TextStyle(
+    color: ColorConstant.primaryColor,
+    fontSize: getFontSize(
+      12,
+    ),
+    fontWeight: FontWeight.w600,
+  );
   static TextStyle txtRobotoRomanBold36 = TextStyle(
     color: ColorConstant.black900,
     fontSize: getFontSize(

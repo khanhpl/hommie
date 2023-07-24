@@ -95,14 +95,20 @@ class _CartScreenState extends State<CartScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         (cartItems == null || cartItems!.data.isEmpty)
-                            ? Padding(
-                                padding: getPadding(top: 30),
-                                child: Icon(
-                                  Icons.shopping_cart,
-                                  color: ColorConstant.primaryColor,
-                                  size: getSize(150),
-                                ),
-                              )
+                            ? Column(
+                              children: [
+                                Padding(
+                                    padding: getPadding(top: 30),
+                                    child: Icon(
+                                      Icons.shopping_cart,
+                                      color: ColorConstant.primaryColor,
+                                      size: getSize(150),
+                                    ),
+                                  ),
+
+                                Text("Giỏ hàng trống. Hãy thêm sản phẩm.", style: AppStyle.txtRegular16Black,),
+                              ],
+                            )
                             : Padding(
                                 padding: getPadding(top: 30),
                                 child: ListView.separated(

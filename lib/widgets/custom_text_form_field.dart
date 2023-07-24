@@ -92,7 +92,8 @@ class CustomTextFormField extends StatelessWidget {
   _buildDecoration() {
     return InputDecoration(
       hintText: hintText ?? "",
-      hintStyle: _setFontStyle(),
+
+      hintStyle: _setFontHintStyle(),
       border: _setBorderStyle(),
       enabledBorder: _setBorderStyle(),
       focusedBorder: _setBorderStyle(),
@@ -113,6 +114,19 @@ class CustomTextFormField extends StatelessWidget {
       default:
         return TextStyle(
           color: ColorConstant.black900,
+          fontSize: getFontSize(
+            14,
+          ),
+          fontFamily: 'Roboto',
+          fontWeight: FontWeight.w400,
+        );
+    }
+  }
+  _setFontHintStyle() {
+    switch (fontStyle) {
+      default:
+        return TextStyle(
+          color: ColorConstant.black900.withOpacity(0.6),
           fontSize: getFontSize(
             14,
           ),

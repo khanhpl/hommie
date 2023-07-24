@@ -1,5 +1,6 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:hommie/core/models/list_item/list_item.dart';
+import 'package:hommie/presentation/bottom_bar_navigator/bottom_bar_navigator.dart';
 import 'package:hommie/presentation/home_screen/bloc/home_bloc.dart';
 import 'package:hommie/presentation/home_screen/bloc/home_event.dart';
 import 'package:hommie/presentation/home_screen/bloc/home_state.dart';
@@ -72,18 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 width: getHorizontalSize(27),
                                 svgPath: ImageConstant.imgCart,
                                 margin: getMargin(top: 10, right: 2),
-                                onTap: () {}),
-                            Align(
-                                alignment: Alignment.topRight,
-                                child: Container(
-                                    width: getHorizontalSize(16),
-                                    margin: getMargin(left: 13, bottom: 13),
-                                    padding: getPadding(
-                                        left: 5, top: 1, right: 5, bottom: 1),
-                                    child: Text("2",
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.left,
-                                        style: AppStyle.txtRobotoBold9)))
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => BottomBarNavigator(selectedIndex: 1, isBottomNav: true),));
+                                }),
+
                           ]))
                     ]),
                 body: Material(

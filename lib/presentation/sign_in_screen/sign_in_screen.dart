@@ -16,6 +16,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _signInBloc = SignInBloc();
+  bool _showPass = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +61,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     CustomTextFormField(
                       focusNode: FocusNode(),
                       controller: null,
-                      hintText: "abc@gmail.com",
+                      hintText: "Tài khoản",
+
                       margin: getMargin(
                         left: 6,
                         top: 47,
@@ -97,6 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                       focusNode: FocusNode(),
                       controller: null,
+                      hintText: " Mật khẩu",
                       margin: getMargin(
                         left: 6,
                         top: 25,
@@ -104,7 +107,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       textInputAction: TextInputAction.done,
                       textInputType: TextInputType.emailAddress,
-                      isObscureText: true,
+                      isObscureText: _showPass,
                       prefix: Container(
                         margin: getMargin(
                           left: 23,
@@ -119,6 +122,22 @@ class _SignInScreenState extends State<SignInScreen> {
                       prefixConstraints: BoxConstraints(
                         maxHeight: getVerticalSize(
                           54,
+                        ),
+                      ),
+                      suffix:  GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            onToggleShowPass();
+                          });
+                        },
+                        child: Icon(
+                          _showPass
+                              ? Icons.remove_red_eye_outlined
+                              : Icons.remove_red_eye_outlined,
+                          color: _showPass
+                              ? ColorConstant.primaryColor
+                              : Colors.grey,
+                          size: size.height * 0.028,
                         ),
                       ),
 
@@ -303,7 +322,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 "Đăng ký",
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
-                                style: AppStyle.txtInterSemiBold12,
+                                style: AppStyle.txtInterSemiBold12Pr,
                               ),
                             ),
                           ),
@@ -318,5 +337,10 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
+  }
+  void onToggleShowPass() {
+    setState(() {
+      _showPass = !_showPass;
+    });
   }
 }
