@@ -1,5 +1,8 @@
 // ignore_for_file: no_logic_in_create_state, must_be_immutable
 
+import 'dart:developer';
+
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/core/models/promo/promo_data.dart';
@@ -39,14 +42,53 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
   List<PromoData> listPromo = [];
   PromoData? selectedPromo;
   String _groupValue = "Thanh toán khi nhận hàng";
-  final addressController = TextEditingController();
-  final phoneController = TextEditingController();
-
+  TextEditingController addressController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
+  Future<void> initDynamicLinks() async {
+    dynamicLinks.onLink.listen((dynamicLinkData) {
+      print('Aloooooooooooooooooooooooooooooooooooooooooooooooo');
+      final Uri uri = dynamicLinkData.link;
+      final queryParams = uri.path;
+      log("abc ${queryParams}");
+      if (queryParams.isNotEmpty) {
+        if (queryParams == "/success") {
+          // Navigator.pushAndRemoveUntil(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => const SuccessScreen(
+          //           content:
+          //           "Nạp tiền thành công. Cảm ơn bạn đã sử dụng dịch vụ",
+          //           buttonName: "Trang chủ",
+          //           navigatorPath: '/homeScreen'),
+          //     ),
+          //         (route) => false);
+          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false);
+          print('Thanh toán thành công nè');
+        } else {
+          // showFailDialog(
+          //     context, "Thanh toán không thành công. Vui lòng thử lại sau");
+          print('Thanh toán thất bại nè');
+        }
+      } else {}
+    }).onError((error) {
+      print('onLink error');
+      print(error.message);
+    });
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     promoBloc.eventController.sink.add(GetAllPromo());
+    if(user != null){
+      phoneController = TextEditingController(text: user!.phoneNumber);
+
+    }
+    if(userAddress.isNotEmpty){
+      addressController = TextEditingController(text: userAddress);
+    }
+    initDynamicLinks();
   }
 
   @override
@@ -85,7 +127,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
             floatingActionButton: Container(
               width: width,
               height: getHorizontalSize(140),
-              color: ColorConstant.primaryColor.withOpacity(0.1),
+              color: ColorConstant.whiteA700,
               child: Column(
                 children: [
                   Row(
@@ -131,16 +173,18 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                           showConfirmOrderDialog(
                               context,
                               40000,
-                              "",
+                              "Trả Sau",
                               addressController.text.trim(),
                               phoneController.text.trim(),
-                              (selectedPromo != null) ? selectedPromo!.code : "null");
+                              (selectedPromo != null) ? selectedPromo!.code : "null", totalPrice + 40000 - ((selectedPromo != null) ? totalPrice*selectedPromo!.value : 0));
                         } else if (_groupValue == "Thanh toán với ví Momo") {
-                          Navigator.push(
+                          showConfirmOrderDialog(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => PaymentForOrderScreen(),
-                              ));
+                              40000,
+                              "Trả Trước",
+                              addressController.text.trim(),
+                              phoneController.text.trim(),
+                              (selectedPromo != null) ? selectedPromo!.code : "null", totalPrice + 40000 - ((selectedPromo != null) ? totalPrice*selectedPromo!.value : 0));
                         }
                       }
                     },
@@ -313,7 +357,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                                   if (snapshot.data is ReturnAllPromo) {
                                     listPromo =
                                         (snapshot.data as ReturnAllPromo)
-                                            .listPromo;
+                                            .listPromo.cast<PromoData>();
                                   }
                                 }
                                 return Padding(
@@ -406,7 +450,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                               right: 10,
                             ),
                             child: Text(
-                              "",
+                             "Mã: ${ (selectedPromo != null) ? selectedPromo!.title : ""}",
                               style: AppStyle.txtMedium14Black,
                             ),
                           ),

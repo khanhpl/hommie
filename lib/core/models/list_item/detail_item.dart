@@ -1,39 +1,41 @@
+import 'item_image.dart';
+
 class Detail {
   int id;
-  String color;
   String size;
-  double price;
+  String color;
   int quantity;
+  List<ItemImage> itemImages;
+  double price;
   String description;
-  String status;
 
   Detail({
     required this.id,
-    required this.color,
     required this.size,
-    required this.price,
+    required this.color,
     required this.quantity,
+    required this.itemImages,
+    required this.price,
     required this.description,
-    required this.status,
   });
 
   factory Detail.fromJson(Map<String, dynamic> json) => Detail(
     id: json["id"],
-    color: json["color"],
     size: json["size"],
-    price: (json["price"] != null) ? json["price"] : 0,
-    quantity: (json["quantity"] != null) ? json["quantity"] : 0,
+    color: json["color"],
+    quantity: json["quantity"],
+    itemImages: List<ItemImage>.from(json["itemImages"].map((x) => ItemImage.fromJson(x))),
+    price: json["price"],
     description: json["description"],
-    status: json["status"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "color": color,
     "size": size,
-    "price": price,
+    "color": color,
     "quantity": quantity,
+    "itemImages": List<dynamic>.from(itemImages.map((x) => x.toJson())),
+    "price": price,
     "description": description,
-    "status": status,
   };
 }

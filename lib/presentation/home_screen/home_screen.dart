@@ -12,6 +12,8 @@ import 'package:hommie/widgets/custom_item.dart';
 
 import '../../core/app_export.dart';
 import '../../core/models/promo/promo_data.dart';
+import '../personal_information_screen/personal_bloc/personal_bloc.dart';
+import '../personal_information_screen/personal_bloc/personal_event.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -26,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
           .toList();
   final _homeBloc = HomeBloc();
   final promoBloc = PromoBloc();
+  final _personalBloc = PersonalBloc();
   ListItem? listItem;
   List<PromoData> listPromo = [];
   @override
@@ -34,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _homeBloc.eventController.sink.add(GetAllItems());
     promoBloc.eventController.sink.add(GetAllPromo());
+    _personalBloc.eventController.sink.add(GetUserInfo());
   }
 
   @override

@@ -1,7 +1,7 @@
-import 'data.dart';
+import 'package:hommie/core/models/list_item/list_item_data.dart';
 
 class ListItem {
-  List<Data> data;
+  List<ListItemData> data;
   int result;
 
   ListItem({
@@ -10,7 +10,7 @@ class ListItem {
   });
 
   factory ListItem.fromJson(Map<String, dynamic> json) => ListItem(
-    data: List<Data>.from(json["data"].map((x) => Data.fromJson(x))),
+    data: List<ListItemData>.from(json["data"].map((x) => ListItemData.fromJson(x))),
     result: json["result"],
   );
 

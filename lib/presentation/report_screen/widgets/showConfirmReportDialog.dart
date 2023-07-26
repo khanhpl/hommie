@@ -1,16 +1,11 @@
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/presentation/order_information_screen/order_bloc/order_bloc.dart';
 import 'package:hommie/presentation/order_information_screen/order_bloc/order_event.dart';
+import 'package:hommie/presentation/report_screen/bloc/report_bloc.dart';
+import 'package:hommie/presentation/report_screen/bloc/report_event.dart';
 
-Future<void> showConfirmOrderDialog(
-    BuildContext context,
-    int feeShip,
-    String paymentType,
-    String address,
-    String phone,
-    String promoCode,
-    double totalPrice) async {
-  final orderBloc = OrderBloc();
+Future<void> showConfirmReportDialog(BuildContext context,String orderCode, String reason) async {
+  final reportBloc = ReportBloc();
   var size = MediaQuery.of(context).size;
   return showDialog<void>(
     context: context,
@@ -41,9 +36,7 @@ Future<void> showConfirmOrderDialog(
                   height: size.height * 0.03,
                 ),
                 Text(
-                  (paymentType == "Trả Sau")
-                      ? "Tiến hành đặt hàng."
-                      : "Thanh toán để đặt hàng.",
+                  "Phản hồi dành cho đơn hàng này.",
                   textAlign: TextAlign.center,
                   style: AppStyle.txtRegular16Black,
                 ),
@@ -100,30 +93,7 @@ Future<void> showConfirmOrderDialog(
                           ),
                         ),
                         onPressed: () {
-                          if (paymentType == "Trả Sau") {
-                            orderBloc.eventController.sink.add(
-                              CreateOrder(
-                                context: context,
-                                feeShip: feeShip,
-                                paymentType: paymentType,
-                                address: address,
-                                phone: phone,
-                                promoCode: promoCode,
-                              ),
-                            );
-                          } else if (paymentType == "Trả Trước") {
-                            orderBloc.eventController.sink.add(
-                              CreateOrderPrePaid(
-                                context: context,
-                                feeShip: feeShip,
-                                paymentType: paymentType,
-                                address: address,
-                                phone: phone,
-                                promoCode: promoCode,
-                                totalPrice: totalPrice,
-                              ),
-                            );
-                          }
+                          reportBloc.eventController.sink.add(ConfirmReport(context: context, image: "image", reason: reason, orderCode: orderCode));
                         },
                       ),
                     ),

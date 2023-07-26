@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hommie/presentation/sign_in_screen/bloc/sign_in_bloc.dart';
 import 'package:hommie/presentation/sign_in_screen/bloc/sign_in_event.dart';
+import 'package:hommie/presentation/splash_screen/splash_screen.dart';
 
 // ignore: must_be_immutable
 class LoginWithGoogleSplitRole extends StatefulWidget {
@@ -37,7 +38,7 @@ class _LoginWithGoogleSplitRoleState extends State<LoginWithGoogleSplitRole> {
       stream: null,
       builder: (context, snapshot) {
         // return const SplashScreen();
-        return const SizedBox();
+        return const SplashScreen();
       },
     );
     // TODO: implement build

@@ -1,13 +1,13 @@
-class ImageList {
+class ItemImage {
   int id;
   String image;
 
-  ImageList({
+  ItemImage({
     required this.id,
     required this.image,
   });
 
-  factory ImageList.fromJson(Map<String, dynamic> json) => ImageList(
+  factory ItemImage.fromJson(Map<String, dynamic> json) => ItemImage(
     id: json["id"],
     image: json["image"],
   );

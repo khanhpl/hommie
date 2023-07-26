@@ -61,7 +61,7 @@ Widget itemInOrderList(BuildContext context, ListItem item) {
                     children: [
                       const Spacer(),
                       Text(
-                        "${MoneyFormatter(amount: item.price).output.withoutFractionDigits} VNĐ",
+                        "Thành tiền: ${MoneyFormatter(amount: item.price).output.withoutFractionDigits} VNĐ",
                         style: AppStyle.txtRegular14Black,
                       ),
                     ],

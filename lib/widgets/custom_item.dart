@@ -1,13 +1,12 @@
 import 'package:hommie/core/app_export.dart';
-import 'package:hommie/core/models/list_item/data.dart';
+import 'package:hommie/core/models/list_item/list_item_data.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
-import 'package:hommie/presentation/cart_screen/cart_bloc/cart_event.dart';
 import 'package:hommie/widgets/item_detail_screen.dart';
 
 // ignore: must_be_immutable
 class CustomItem extends StatelessWidget {
   CustomItem({super.key, required this.item});
-  Data item;
+  ListItemData item;
   double avgRating = 0;
   final _cartBloc = CartBloc();
   @override
@@ -89,29 +88,29 @@ class CustomItem extends StatelessWidget {
                                     ),
                                   ),
                                   const Spacer(),
-                                  CustomImageView(
-                                    svgPath:
-                                        ImageConstant.imgAtomoestrellaactiva,
-                                    height: getVerticalSize(
-                                      15,
-                                    ),
-                                    width: getHorizontalSize(
-                                      16,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: getPadding(
-                                      left: 3,
-                                      top: 1,
-                                      bottom: 1,
-                                    ),
-                                    child: Text(
-                                      avgRating.ceil().toString(),
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.left,
-                                      style: AppStyle.txtRegular10,
-                                    ),
-                                  ),
+                                  // CustomImageView(
+                                  //   svgPath:
+                                  //       ImageConstant.imgAtomoestrellaactiva,
+                                  //   height: getVerticalSize(
+                                  //     15,
+                                  //   ),
+                                  //   width: getHorizontalSize(
+                                  //     16,
+                                  //   ),
+                                  // ),
+                                  // Padding(
+                                  //   padding: getPadding(
+                                  //     left: 3,
+                                  //     top: 1,
+                                  //     bottom: 1,
+                                  //   ),
+                                  //   child: Text(
+                                  //     avgRating.ceil().toString(),
+                                  //     overflow: TextOverflow.ellipsis,
+                                  //     textAlign: TextAlign.left,
+                                  //     style: AppStyle.txtRegular10,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -142,7 +141,7 @@ class CustomItem extends StatelessWidget {
                                       top: 12,
                                     ),
                                     child: Text(
-                                      "${MoneyFormatter(amount: item.details[0].price).output.withoutFractionDigits} VND",
+                                      "${MoneyFormatter(amount: item.details[0].price.toDouble()).output.withoutFractionDigits} VND",
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtRegular14Bluegray700,
@@ -191,70 +190,70 @@ class CustomItem extends StatelessWidget {
                             10,
                           ),
                         ),
-                        image: DecorationImage(image: NetworkImage(item.imageList[0].image), fit: BoxFit.fill),
+                        image: DecorationImage(image: NetworkImage(item.avatar), fit: BoxFit.fill),
                       ),
-                      child: Stack(
-                        alignment: Alignment.topCenter,
-                        children: [
-
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Card(
-                              clipBehavior: Clip.antiAlias,
-                              elevation: 0,
-                              margin: getMargin(
-                                top: 8,
-                              ),
-                              color: ColorConstant.yellow900,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  getHorizontalSize(
-                                    10,
-                                  ),
-                                ),
-                              ),
-                              child: Container(
-                                height: getVerticalSize(
-                                  18,
-                                ),
-                                width: getHorizontalSize(
-                                  19,
-                                ),
-                                padding: getPadding(
-                                  left: 6,
-                                  top: 5,
-                                  right: 6,
-                                  bottom: 5,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: ColorConstant.yellow900,
-                                  borderRadius: BorderRadius.circular(
-                                    getHorizontalSize(
-                                      10,
-                                    ),
-                                  ),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    CustomImageView(
-                                      svgPath:
-                                          ImageConstant.imgFavoriteWhiteA700,
-                                      height: getVerticalSize(
-                                        6,
-                                      ),
-                                      width: getHorizontalSize(
-                                        7,
-                                      ),
-                                      alignment: Alignment.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                        ],
-                      ),
+                      // child: Stack(
+                      //   alignment: Alignment.topCenter,
+                      //   children: [
+                      //
+                      //     Align(
+                      //       alignment: Alignment.topRight,
+                      //       child: Card(
+                      //         clipBehavior: Clip.antiAlias,
+                      //         elevation: 0,
+                      //         margin: getMargin(
+                      //           top: 8,
+                      //         ),
+                      //         color: ColorConstant.yellow900,
+                      //         shape: RoundedRectangleBorder(
+                      //           borderRadius: BorderRadius.circular(
+                      //             getHorizontalSize(
+                      //               10,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         child: Container(
+                      //           height: getVerticalSize(
+                      //             18,
+                      //           ),
+                      //           width: getHorizontalSize(
+                      //             19,
+                      //           ),
+                      //           padding: getPadding(
+                      //             left: 6,
+                      //             top: 5,
+                      //             right: 6,
+                      //             bottom: 5,
+                      //           ),
+                      //           decoration: BoxDecoration(
+                      //             color: ColorConstant.yellow900,
+                      //             borderRadius: BorderRadius.circular(
+                      //               getHorizontalSize(
+                      //                 10,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           child: Stack(
+                      //             children: [
+                      //               CustomImageView(
+                      //                 svgPath:
+                      //                     ImageConstant.imgFavoriteWhiteA700,
+                      //                 height: getVerticalSize(
+                      //                   6,
+                      //                 ),
+                      //                 width: getHorizontalSize(
+                      //                   7,
+                      //                 ),
+                      //                 alignment: Alignment.center,
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //
+                      //   ],
+                      // ),
                     ),
                   ),
                 ),

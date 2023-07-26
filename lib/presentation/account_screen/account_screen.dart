@@ -2,10 +2,13 @@ import 'package:hive/hive.dart';
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/presentation/account_screen/widgets/avatar_widget.dart';
 import 'package:hommie/presentation/account_screen/widgets/tab_element_widget.dart';
+import 'package:hommie/presentation/app_information_screen/app_information_screen.dart';
 import 'package:hommie/presentation/change_password_screen/change_password_screen.dart';
 import 'package:hommie/presentation/feedback_screen/feedback_screen.dart';
 import 'package:hommie/presentation/history_screen/history_screen.dart';
 import 'package:hommie/presentation/personal_information_screen/personal_information_screen.dart';
+import 'package:hommie/presentation/splash_screen/splash_screen.dart';
+import 'package:hommie/presentation/test_deep_link_screen/test_deep_link_screen.dart';
 
 import '../../core/fire_base/provider/google_sign_in_provider.dart';
 
@@ -76,7 +79,9 @@ class _AccountScreenState extends State<AccountScreen> {
                   ],
                 ),
               ),
-              // tabElementWidget(context, "Yêu thích", "", ""),
+              // GestureDetector(onTap:(){
+              //   Navigator.push(context, MaterialPageRoute(builder: (context) => TestDeepLinkScreen(),));
+              // },child: tabElementWidget(context, "Yêu thích", "", "")),
               GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -84,6 +89,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         MaterialPageRoute(
                           builder: (context) => const HistoryScreen(),
                         ));
+
                   },
                   child: tabElementWidget(context, "Lịch sử", "", "")),
               GestureDetector(
@@ -108,7 +114,11 @@ class _AccountScreenState extends State<AccountScreen> {
                       },
                       child: tabElementWidget(context, "Đổi mật khẩu", "", ""))
                   : const SizedBox(),
-              tabElementWidget(context, "Thông tin ứng dụng", "", ""),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AppInformationScreen(),));
+                },
+                  child: tabElementWidget(context, "Thông tin ứng dụng", "", "")),
               // tabElementWidget(context, "Trò chuyện", "", ""),
               GestureDetector(
                 onTap: () {

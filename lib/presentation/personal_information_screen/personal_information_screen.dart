@@ -58,6 +58,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
               _dobController = TextEditingController(text: userInfo!.data.dob);
               _personalBloc.eventController.sink.add(ChooseDOB(dob: userInfo!.data.dob));
             }
+            _personalBloc.eventController.sink.add(OtherPersonalEvent());
           }
         }
         return Form(

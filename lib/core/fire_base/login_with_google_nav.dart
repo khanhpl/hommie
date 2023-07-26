@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hommie/presentation/bottom_bar_navigator/bottom_bar_navigator.dart';
 import 'package:hommie/presentation/sign_in_screen/sign_in_screen.dart';
+import 'package:hommie/presentation/splash_screen/splash_screen.dart';
 
 import 'login_with_google_split_role/login_with_google_split_role.dart';
 
@@ -36,12 +37,12 @@ class _LoginWithGoogleNavState extends State<LoginWithGoogleNav> {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox();
+            return const SplashScreen();
           } else if (snapshot.hasData) {
             return LoginWithGoogleSplitRole(user: FirebaseAuth.instance.currentUser!);
             return BottomBarNavigator(selectedIndex: 0, isBottomNav: true);
           } else if (snapshot.hasError) {
-            return const SizedBox();
+            return const SplashScreen();
           } else {
             // if(_elsBox.get('checkLogin') != null){
             //   if(_elsBox.get('checkLogin')){

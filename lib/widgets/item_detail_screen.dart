@@ -1,18 +1,20 @@
 // ignore_for_file: no_logic_in_create_state, must_be_immutable
 
 import 'package:hommie/core/app_export.dart';
-import 'package:hommie/core/models/list_item/data.dart';
+import 'package:hommie/core/models/list_item/item_image.dart';
+import 'package:hommie/core/models/list_item/list_item_data.dart';
 import 'package:hommie/core/models/list_item/detail_item.dart';
+import 'package:hommie/presentation/bottom_bar_navigator/bottom_bar_navigator.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_state.dart';
 import 'package:hommie/widgets/option_widget.dart';
 
 import '../presentation/cart_screen/cart_bloc/cart_event.dart';
+import 'custom_carousel_image2.dart';
 
 class ItemDetailScreen extends StatefulWidget {
   ItemDetailScreen({Key? key, required this.item}) : super(key: key);
-  Data item;
-
+  ListItemData item;
   @override
   State<ItemDetailScreen> createState() => _ItemDetailScreenState(item: item);
 }
@@ -20,9 +22,20 @@ class ItemDetailScreen extends StatefulWidget {
 class _ItemDetailScreenState extends State<ItemDetailScreen> {
   _ItemDetailScreenState({required this.item});
 
-  Data item;
+  List<String> images = [];
+  ListItemData item;
   final _cartBloc = CartBloc();
   Detail? selectedItem;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    for(Detail detail in item.details){
+      for(ItemImage image in detail.itemImages){
+        images.add(image.image);
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Object>(
@@ -52,10 +65,12 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
             ),
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomBarNavigator(selectedIndex: 1, isBottomNav: true),), (route) => false);
+                },
                 icon: Icon(
-                  Icons.favorite_border,
-                  size: getSize(10),
+                  Icons.shopping_cart,
+                  size: getSize(25),
                   color: ColorConstant.primaryColor,
                 ),
               ),
@@ -72,7 +87,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               right: 20,
             ),
             onTap: () {
-              if(selectedItem != 0){
+              if(selectedItem != null){
                 _cartBloc.eventController.sink.add(AddToCart(
                     context: context, quantity: 1, itemDetailID: selectedItem!.id));
               }else{
@@ -96,16 +111,14 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                      margin: getMargin(top: 10),
-                      width: width,
-                      height: getHorizontalSize(250),
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(item.imageList[0].image),
-                          fit: BoxFit.fill,
-                        ),
+                        color: Colors.white,
+                        borderRadius:
+                        BorderRadius.circular(size.height * 0.02),
                       ),
+                      child:  CustomCarouselImage2(images: images),
                     ),
+
                     Container(
                       width: width,
                       margin: getMargin(top: 15),
@@ -130,7 +143,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "${MoneyFormatter(amount: (selectedItem != null) ? selectedItem!.price : item.details[0].price).output.withoutFractionDigits} VNĐ",
+                                "${MoneyFormatter(amount: (selectedItem != null) ? selectedItem!.price.toDouble() : item.details[0].price.toDouble()).output.withoutFractionDigits} VNĐ",
                                 style: AppStyle.txtRobotoRomanMedium16,
                                 maxLines: null,
                               ),

@@ -135,8 +135,8 @@ class _SignInScreenState extends State<SignInScreen> {
                               ? Icons.remove_red_eye_outlined
                               : Icons.remove_red_eye_outlined,
                           color: _showPass
-                              ? ColorConstant.primaryColor
-                              : Colors.grey,
+                              ? Colors.grey
+                              : ColorConstant.primaryColor,
                           size: size.height * 0.028,
                         ),
                       ),

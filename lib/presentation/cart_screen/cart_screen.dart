@@ -119,13 +119,7 @@ class _CartScreenState extends State<CartScreen> {
                                   itemBuilder: (context, index) {
                                     return cartItem(
                                         context,
-                                        cartItems!.data[index].itemName,
-                                        cartItems!.data[index].material,
-                                        cartItems!.data[index].color,
-                                        cartItems!.data[index].quantity,
-                                        cartItems!.data[index].price,
-                                        cartItems!.data[index].itemImage,
-                                        cartItems!.data[index].cartItemId);
+                                        cartItems!.data[index]);
                                   },
                                   separatorBuilder: (context, index) {
                                     return SizedBox(

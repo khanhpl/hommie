@@ -34,6 +34,25 @@ class CreateOrder extends OrderEvent {
   String promoCode;
 }
 
+class CreateOrderPrePaid extends OrderEvent {
+  CreateOrderPrePaid(
+      {required this.context,
+      required this.feeShip,
+      required this.paymentType,
+      required this.address,
+      required this.phone,
+      required this.promoCode,
+      required this.totalPrice});
+
+  BuildContext context;
+  int feeShip;
+  String paymentType;
+  String address;
+  String phone;
+  String promoCode;
+  double totalPrice;
+}
+
 class GetAllOrder extends OrderEvent {}
 
 class CancelOrder extends OrderEvent {
@@ -45,7 +64,8 @@ class CancelOrder extends OrderEvent {
   String reason;
 }
 
-class ChoosePromo extends OrderEvent{
+class ChoosePromo extends OrderEvent {
   ChoosePromo({required this.promo});
+
   PromoData promo;
 }

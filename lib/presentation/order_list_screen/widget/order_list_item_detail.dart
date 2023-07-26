@@ -44,7 +44,7 @@ class _OrderDetailState extends State<OrderDetail> {
               ),
             ),
           ),
-          floatingActionButton: customOrderButton(context, orderData.orderStatus, orderData.orderId),
+          floatingActionButton: customOrderButton(context, orderData.orderStatus, orderData.orderId,orderData.orderCode),
           floatingActionButtonLocation:
           FloatingActionButtonLocation.centerFloat,
           body: Material(
@@ -131,7 +131,7 @@ class _OrderDetailState extends State<OrderDetail> {
                               SizedBox(
                                 width: width / 2 - getHorizontalSize(32),
                                 child: Text(
-                                  "Thành tiền:",
+                                  "Tổng tiền:",
                                   style: AppStyle.txtRegular16Black,
                                 ),
                               ),

@@ -41,7 +41,6 @@ class CartBloc {
     try {
       Uri url = Uri.parse(
           "https://tiemhommie-0835ad80e9db.herokuapp.com/api/cart-item/add-to-cart");
-
       final response = await http.post(
         url,
         headers: <String, String>{

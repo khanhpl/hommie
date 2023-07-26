@@ -94,63 +94,85 @@ class _SearchScreenState extends State<SearchScreen> {
                   imagePath: ImageConstant.imgDecorShopPm,
                   margin: getMargin(left: 90)),
               actions: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return StatefulBuilder(builder: (context, setState) {
-                            return AlertDialog(
-                              title: Text(
-                                'Danh mục',
-                                style: AppStyle.txtRobotoRomanBold24,
-                              ),
-                              content: Material(
-                                child: Container(
-                                  width: width,
-                                  height: getVerticalSize(400),
-                                  color: Colors.white,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        (categories != null)
-                                            ? SizedBox(
-                                                child: RadioGroup<
-                                                    Category?>.builder(
-                                                  direction: Axis.vertical,
-                                                  groupValue:
-                                                      (selectedCate != null)
-                                                          ? selectedCate
-                                                          : null,
-                                                  horizontalAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceAround,
-                                                  onChanged: (value) =>
-                                                      setState(() {
-                                                    _searchBloc
-                                                        .eventController.sink
-                                                        .add(ChooseCate(
-                                                            cate: value!));
+                Padding(
+                  padding: getPadding(right: 10),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return StatefulBuilder(builder: (context, setState) {
+                              return AlertDialog(
+                                title: Text(
+                                  'Danh mục',
+                                  style: AppStyle.txtRobotoRomanBold24,
+                                ),
+                                content: Material(
+                                  child: Container(
+                                    width: width,
+                                    height: getVerticalSize(400),
+                                    color: Colors.white,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          (categories != null)
+                                              ? SizedBox(
+                                                  child: RadioGroup<
+                                                      Category?>.builder(
+                                                    direction: Axis.vertical,
+                                                    groupValue:
+                                                        (selectedCate != null)
+                                                            ? selectedCate
+                                                            : null,
+                                                    horizontalAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    onChanged: (value) =>
+                                                        setState(() {
+                                                      _searchBloc
+                                                          .eventController.sink
+                                                          .add(ChooseCate(
+                                                              cate: value!));
 
-                                                    Navigator.pop(context);
-                                                    if (value.name ==
-                                                        "Tất cả") {
-                                                      // subCategories = null;
-                                                      selectedSubCate = null;
-                                                    } else {
-                                                      if (listSubCate
-                                                          .where((element) {
-                                                            if (element.data
-                                                                    .length >
+                                                      Navigator.pop(context);
+                                                      if (value.name ==
+                                                          "Tất cả") {
+                                                        // subCategories = null;
+                                                        selectedSubCate = null;
+                                                      } else {
+                                                        if (listSubCate
+                                                            .where((element) {
+                                                              if (element.data
+                                                                      .length >
+                                                                  1) {
+                                                                if (element
+                                                                        .data[1]
+                                                                        .cateId ==
+                                                                    value.id) {
+                                                                  return true;
+                                                                } else {
+                                                                  return false;
+                                                                }
+                                                              } else {
+                                                                return false;
+                                                              }
+                                                            })
+                                                            .toList()
+                                                            .isNotEmpty) {
+                                                          SubCategories
+                                                              subCateDialogData =
+                                                              listSubCate.where(
+                                                                  (element) {
+                                                            if (element
+                                                                    .data.length >
                                                                 1) {
-                                                              if (element
-                                                                      .data[1]
+                                                              if (element.data[1]
                                                                       .cateId ==
                                                                   value.id) {
                                                                 return true;
@@ -160,123 +182,104 @@ class _SearchScreenState extends State<SearchScreen> {
                                                             } else {
                                                               return false;
                                                             }
-                                                          })
-                                                          .toList()
-                                                          .isNotEmpty) {
-                                                        SubCategories
-                                                            subCateDialogData =
-                                                            listSubCate.where(
-                                                                (element) {
-                                                          if (element
-                                                                  .data.length >
-                                                              1) {
-                                                            if (element.data[1]
-                                                                    .cateId ==
-                                                                value.id) {
-                                                              return true;
-                                                            } else {
-                                                              return false;
-                                                            }
-                                                          } else {
-                                                            return false;
-                                                          }
-                                                        }).toList()[0];
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                'Loại sản phẩm',
-                                                                style: AppStyle
-                                                                    .txtRobotoRomanBold24,
-                                                              ),
-                                                              content:
-                                                                  StatefulBuilder(
-                                                                builder: (context,
-                                                                    setState) {
-                                                                  return Material(
-                                                                    child:
-                                                                        Container(
-                                                                      width:
-                                                                          width,
-                                                                      height:
-                                                                          getVerticalSize(
-                                                                              400),
-                                                                      color: Colors
-                                                                          .white,
+                                                          }).toList()[0];
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                  'Loại sản phẩm',
+                                                                  style: AppStyle
+                                                                      .txtRobotoRomanBold24,
+                                                                ),
+                                                                content:
+                                                                    StatefulBuilder(
+                                                                  builder: (context,
+                                                                      setState) {
+                                                                    return Material(
                                                                       child:
-                                                                          SingleChildScrollView(
-                                                                        scrollDirection:
-                                                                            Axis.vertical,
+                                                                          Container(
+                                                                        width:
+                                                                            width,
+                                                                        height:
+                                                                            getVerticalSize(
+                                                                                400),
+                                                                        color: Colors
+                                                                            .white,
                                                                         child:
-                                                                            Column(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.start,
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            SizedBox(
-                                                                              child: RadioGroup<SubCategory?>.builder(
-                                                                                direction: Axis.vertical,
-                                                                                groupValue: (selectedSubCate != null) ? selectedSubCate : null,
-                                                                                horizontalAlignment: MainAxisAlignment.spaceAround,
-                                                                                onChanged: (value) => setState(() {
-                                                                                  selectedSubCate = value;
-                                                                                  _searchBloc.eventController.sink.add(ChooseSubCate(subCate: value!));
-                                                                                  Navigator.pop(context);
-                                                                                }),
-                                                                                items: subCateDialogData.data,
-                                                                                textStyle: TextStyle(
-                                                                                  fontSize: getSize(15),
-                                                                                  color: Colors.black,
+                                                                            SingleChildScrollView(
+                                                                          scrollDirection:
+                                                                              Axis.vertical,
+                                                                          child:
+                                                                              Column(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.start,
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              SizedBox(
+                                                                                child: RadioGroup<SubCategory?>.builder(
+                                                                                  direction: Axis.vertical,
+                                                                                  groupValue: (selectedSubCate != null) ? selectedSubCate : null,
+                                                                                  horizontalAlignment: MainAxisAlignment.spaceAround,
+                                                                                  onChanged: (value) => setState(() {
+                                                                                    selectedSubCate = value;
+                                                                                    _searchBloc.eventController.sink.add(ChooseSubCate(subCate: value!));
+                                                                                    Navigator.pop(context);
+                                                                                  }),
+                                                                                  items: subCateDialogData.data,
+                                                                                  textStyle: TextStyle(
+                                                                                    fontSize: getSize(15),
+                                                                                    color: Colors.black,
+                                                                                  ),
+                                                                                  itemBuilder: (item) => RadioButtonBuilder(
+                                                                                    item!.name,
+                                                                                  ),
                                                                                 ),
-                                                                                itemBuilder: (item) => RadioButtonBuilder(
-                                                                                  item!.name,
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                          ],
+                                                                              )
+                                                                            ],
+                                                                          ),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                            );
-                                                          },
-                                                        );
-                                                      } else {
-                                                        print('ko có data');
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              );
+                                                            },
+                                                          );
+                                                        } else {
+                                                          print('ko có data');
+                                                        }
                                                       }
-                                                    }
-                                                  }),
-                                                  items: categories!.data,
-                                                  textStyle: TextStyle(
-                                                    fontSize: getSize(15),
-                                                    color: Colors.black,
+                                                    }),
+                                                    items: categories!.data,
+                                                    textStyle: TextStyle(
+                                                      fontSize: getSize(15),
+                                                      color: Colors.black,
+                                                    ),
+                                                    itemBuilder: (item) =>
+                                                        RadioButtonBuilder(
+                                                      item!.name,
+                                                    ),
                                                   ),
-                                                  itemBuilder: (item) =>
-                                                      RadioButtonBuilder(
-                                                    item!.name,
-                                                  ),
-                                                ),
-                                              )
-                                            : const SizedBox(),
-                                      ],
+                                                )
+                                              : const SizedBox(),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          });
-                        },
-                      );
-                    });
-                  },
-                  child: Icon(
-                    Icons.filter_alt_sharp,
-                    color: ColorConstant.primaryColor,
-                    size: getSize(30),
+                              );
+                            });
+                          },
+                        );
+                      });
+                    },
+                    child: Icon(
+                      Icons.filter_alt_sharp,
+                      color: ColorConstant.primaryColor,
+                      size: getSize(30),
+                    ),
                   ),
                 ),
               ],
@@ -373,11 +376,13 @@ class _SearchScreenState extends State<SearchScreen> {
                               ],
                             ),
                           ),
+
+                    SizedBox(height: getVerticalSize(15),),
                     (listItem != null)
                         ? (listItem!.data.isNotEmpty)
                             ? Expanded(
                                 child: Padding(
-                                  padding: getPadding(left: 20, right: 20),
+                                  padding: getPadding(left: 20, right: 20, bottom: 15),
                                   child: GridView.builder(
                                       gridDelegate:
                                           SliverGridDelegateWithMaxCrossAxisExtent(
@@ -401,7 +406,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       }),
                                 ),
                               )
-                            : const SizedBox()
+                            : const Text("Chưa có sản phẩm")
                         : const SizedBox(),
                   ],
                 ),

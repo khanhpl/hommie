@@ -6,6 +6,7 @@ import 'package:hommie/presentation/cart_screen/cart_screen.dart';
 import 'package:hommie/presentation/home_screen/home_screen.dart';
 import 'package:hommie/presentation/order_list_screen/order_list_screen.dart';
 import 'package:hommie/presentation/search_screen/search_screen.dart';
+import 'package:hommie/presentation/splash_screen/splash_screen.dart';
 import 'dart:math' as math;
 
 import '../../core/utils/color_constant.dart';
@@ -44,7 +45,7 @@ class _BottomBarNavigatorState extends State<BottomBarNavigator> {
         return const AccountScreen();
 
       default:
-        return const SizedBox();
+        return const SplashScreen();
     }
   }
 
