@@ -60,6 +60,7 @@ class PersonalBloc{
       if (response.statusCode.toString() == '200') {
         UserInfo userInfo = UserInfo.fromJson(json.decode(response.body));
         userAddress = (userInfo.data.address != null) ? userInfo.data.address : "";
+        phone = userInfo.data.phoneNumber;
         stateController.sink.add(ReturnUserInfo(userInfo: userInfo));
       } else {
         print('fail: ');

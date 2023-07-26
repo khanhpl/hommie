@@ -83,14 +83,27 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
     promoBloc.eventController.sink.add(GetAllPromo());
     if(user != null){
       phoneController = TextEditingController(text: user!.phoneNumber);
-
     }
     if(userAddress.isNotEmpty){
       addressController = TextEditingController(text: userAddress);
+      phoneController = TextEditingController(text: phone);
     }
     initDynamicLinks();
   }
+  double calTotalPrice(){
+    double calculatedTotalPrice = 0;
+    if(selectedPromo != null){
+      if(selectedPromo!.value % 1 == 0){
+        calculatedTotalPrice = totalPrice + 40000 - selectedPromo!.value;
+      }else{
+        calculatedTotalPrice = totalPrice + 40000 - totalPrice*selectedPromo!.value;
+      }
 
+    }else{
+     calculatedTotalPrice =  totalPrice + 40000;
+    }
+    return calculatedTotalPrice;
+  }
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -151,7 +164,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                           right: 20,
                         ),
                         child: Text(
-                          "${MoneyFormatter(amount: totalPrice + 40000 - ((selectedPromo != null) ? totalPrice*selectedPromo!.value : 0)).output.withoutFractionDigits} VNĐ",
+                          "${MoneyFormatter(amount: calTotalPrice()).output.withoutFractionDigits} VNĐ",
                           style: AppStyle.txtMedium14Black,
                         ),
                       ),
@@ -258,7 +271,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                           _orderBloc.eventController.sink
                               .add(InputPhone(phone: value!.toString().trim()));
                           if (value.toString().trim().isEmpty || value.toString().trim().length != 10) {
-                            return "Vui lòng không để trống số điện thoại";
+                            return "Số điện thoại phải có 10 ký tự";
                           }
                           return null;
                         },

@@ -85,8 +85,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   cursorColor: ColorConstant.primaryColor,
                                   controller: curPassController,
                                   validator: (value) {
-                                    if (value == null || !isValidPassword(value.toString())) {
-                                      return "Vui lòng nhập đúng định dạng mật khẩu";
+                                    if (value == null || !isValidPassword(value.toString().trim(), isRequired: true)) {
+                                      return "Mật khẩu phải có tối thiểu 8 ký tự bao gồm chữ thường, chữ in hoa và số";
                                     }
                                     return null;
                                   },
@@ -158,7 +158,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   validator: (value) {
                                     // _forgotBloc.eventController.sink.add(InputNewPass(newPass: value.toString().trim()));
                                     if (value == null || !isValidPassword(value.toString().trim(), isRequired: true)) {
-                                      return "Vui lòng nhập dúng định dạng mật khẩu";
+                                      return "Mật khẩu phải có tối thiểu 8 ký tự bao gồm chữ thường, chữ in hoa và số";
                                     }
                                     return null;
                                   },

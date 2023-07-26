@@ -145,7 +145,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         _signInBloc.eventController.sink.add(InputPassword(password: value.toString()));
                         if (value == null ||
                             (!isValidPassword(value, isRequired: true))) {
-                          return "Vui lòng nhập đúng định dạng password";
+                          return "Mật khẩu phải có tối thiểu 8 ký tự bao gồm chữ thường, chữ in hoa và số";
                         }
                         return null;
                       },

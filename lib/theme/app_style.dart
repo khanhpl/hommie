@@ -25,7 +25,7 @@ class AppStyle {
     fontWeight: FontWeight.w400,
   );
   static TextStyle txtInterSemiBold12 = TextStyle(
-    color: ColorConstant.green400,
+    color: ColorConstant.primaryColor,
     fontSize: getFontSize(
       12,
     ),

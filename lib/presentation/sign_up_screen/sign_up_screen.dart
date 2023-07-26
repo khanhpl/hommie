@@ -14,6 +14,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _signUpBloc = SignUpBloc();
   final _passwordController = TextEditingController();
+  bool _showPass = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +89,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                           validator: (value) {
-                            _signUpBloc.eventController.sink.add(InputUsername(username: value.toString()));
+                            _signUpBloc.eventController.sink
+                                .add(InputUsername(username: value.toString()));
                             if (value == null ||
                                 (!isValidEmail(value, isRequired: true))) {
                               return "Vui lòng nhập đúng định dạng email";
@@ -127,12 +130,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             _signUpBloc.eventController.sink
                                 .add(InputFullName(fullName: value.toString()));
 
-                            if (value == null || value.toString().trim().isEmpty) {
+                            if (value == null ||
+                                value.toString().trim().isEmpty) {
                               return "Vui lòng nhập họ và tên";
                             }
                             return null;
-
-
                           },
                         ),
                         CustomTextFormField(
@@ -154,7 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 right: 12,
                                 bottom: 19,
                               ),
-                              child: Icon(
+                              child: const Icon(
                                 Icons.phone,
                                 color: Colors.black,
                               )),
@@ -167,12 +169,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             _signUpBloc.eventController.sink
                                 .add(InputPhone(phone: value.toString()));
 
-                            if (value == null || value.toString().trim().isEmpty) {
-                              return "Vui lòng nhập số điện thoại";
+                            if (value.toString().trim().isEmpty || value.toString().trim().length != 10) {
+                              return "Số điện thoại phải có 10 ký tự";
                             }
                             return null;
-
-
                           },
                         ),
                         CustomTextFormField(
@@ -186,7 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           textInputAction: TextInputAction.done,
                           textInputType: TextInputType.emailAddress,
-                          isObscureText: true,
+                          isObscureText: _showPass,
                           prefix: Container(
                             margin: getMargin(
                               left: 23,
@@ -203,12 +203,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               54,
                             ),
                           ),
+                          suffix: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                onToggleShowPass();
+                              });
+                            },
+                            child: Icon(
+                              _showPass
+                                  ? Icons.remove_red_eye_outlined
+                                  : Icons.remove_red_eye_outlined,
+                              color: _showPass
+                                  ? Colors.grey
+                                  : ColorConstant.primaryColor,
+                              size: size.height * 0.028,
+                            ),
+                          ),
                           validator: (value) {
                             _signUpBloc.eventController.sink
                                 .add(InputPassword(password: value.toString()));
                             if (value == null ||
                                 (!isValidPassword(value, isRequired: true))) {
-                              return "Vui lòng nhập đúng định dạng password";
+                              return "Mật khẩu phải có tối thiểu 8 ký tự bao gồm chữ thường, chữ in hoa và số";
                             }
                             return null;
                           },
@@ -217,6 +233,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           hintText: "Nhập lại mật khẩu",
                           focusNode: FocusNode(),
                           controller: null,
+
                           margin: getMargin(
                             left: 6,
                             top: 25,
@@ -224,7 +241,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           textInputAction: TextInputAction.done,
                           textInputType: TextInputType.emailAddress,
-                          isObscureText: true,
+                          isObscureText: _showPass,
                           prefix: Container(
                             margin: getMargin(
                               left: 23,
@@ -241,12 +258,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               54,
                             ),
                           ),
+                          suffix: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                onToggleShowPass();
+                              });
+                            },
+                            child: Icon(
+                              _showPass
+                                  ? Icons.remove_red_eye_outlined
+                                  : Icons.remove_red_eye_outlined,
+                              color: _showPass
+                                  ? Colors.grey
+                                  : ColorConstant.primaryColor,
+                              size: size.height * 0.028,
+                            ),
+                          ),
                           validator: (value) {
-                            _signUpBloc.eventController.sink
-                                .add(InputRePassword(rePassword: value.toString()));
+                            _signUpBloc.eventController.sink.add(
+                                InputRePassword(rePassword: value.toString()));
                             if (value == null ||
-                                value.toString().trim() != _passwordController.text.trim()) {
-
+                                value.toString().trim() !=
+                                    _passwordController.text.trim()) {
                               return "Mật khẩu chưa trùng khớp";
                             }
                             return null;
@@ -352,7 +385,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           variant: ButtonVariant.OutlineGray200,
                           shape: ButtonShape.RoundedBorder15,
                           padding: ButtonPadding.PaddingT18,
-                          fontStyle: ButtonFontStyle.RobotoRomanMedium15Black900,
+                          fontStyle:
+                              ButtonFontStyle.RobotoRomanMedium15Black900,
                           prefixWidget: Container(
                             margin: getMargin(
                               right: 9,
@@ -401,6 +435,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ],
                           ),
                         ),
+                        SizedBox(height: getVerticalSize(200),),
                       ],
                     ),
                   ),
@@ -409,5 +444,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void onToggleShowPass() {
+    setState(() {
+      _showPass = !_showPass;
+    });
   }
 }

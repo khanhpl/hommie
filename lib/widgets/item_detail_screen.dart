@@ -26,18 +26,51 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   ListItemData item;
   final _cartBloc = CartBloc();
   Detail? selectedItem;
+  String sizeString = '';
+  String colorString = '';
+  String descriptionStr = '';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     for(Detail detail in item.details){
+
+      bool isDubSize = false;
+      bool isDubColor = false;
+      for(String size in sizeString.split(",")){
+        if(size.trim() == detail.size.trim()){
+          isDubSize = true;
+        }
+      }
+      if(!isDubSize){
+        sizeString = "$sizeString${detail.size}, ";
+      }
+      for(String color in colorString.split(",")){
+
+        if(color.trim() == detail.color.trim()){
+          isDubColor = true;
+        }
+      }
+      if(!isDubColor){
+        colorString = "$colorString${detail.color}, ";
+      }
+
+
       for(ItemImage image in detail.itemImages){
-        images.add(image.image);
+        if(!images.contains(image.image)){
+          images.add(image.image);
+        }
+      }
+      if(descriptionStr.isEmpty){
+        descriptionStr = "-${detail.description}";
+      }else{
+        descriptionStr = "$descriptionStr\n-${detail.description}";
       }
     }
   }
   @override
   Widget build(BuildContext context) {
+
     return StreamBuilder<Object>(
       stream: _cartBloc.stateController.stream,
       builder: (context, snapshot) {
@@ -88,8 +121,17 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
             ),
             onTap: () {
               if(selectedItem != null){
-                _cartBloc.eventController.sink.add(AddToCart(
-                    context: context, quantity: 1, itemDetailID: selectedItem!.id));
+                if(selectedItem!.quantity >0){
+                  _cartBloc.eventController.sink.add(AddToCart(
+                      context: context, quantity: 1, itemDetailID: selectedItem!.id));
+                }else{
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Sản phẩm tạm hết hàng'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
               }else{
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -149,20 +191,12 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                               ),
                               const Spacer(),
                               Text(
-                                "0",
+                                "Số lượng: ${selectedItem!= null ? selectedItem!.quantity : ""}",
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtRegular14Bluegray700,
                               ),
-                              CustomImageView(
-                                svgPath: ImageConstant.imgAtomoestrellaactiva,
-                                height: getVerticalSize(
-                                  15,
-                                ),
-                                width: getHorizontalSize(
-                                  16,
-                                ),
-                              ),
+
                               Text(
                                 " | ",
                                 overflow: TextOverflow.ellipsis,
@@ -170,7 +204,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                 style: AppStyle.txtRegular14Bluegray700,
                               ),
                               Text(
-                                "0 lượt mua",
+                                "${item.buyNumber} lượt mua",
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtRegular14Bluegray700,
@@ -393,7 +427,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                                           alignment:
                                                               Alignment.topLeft,
                                                           child: Text(
-                                                            item.details[0].size,
+                                                            sizeString,
+                                                            maxLines: null,
                                                             style: AppStyle
                                                                 .txtRegular16Black,
                                                           ),
@@ -426,8 +461,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                                         child: Align(
                                                           alignment:
                                                               Alignment.topLeft,
+
                                                           child: Text(
-                                                            item.details[0].color,
+                                                            colorString,
+                                                            maxLines: null,
                                                             style: AppStyle
                                                                 .txtRegular16Black,
                                                           ),
@@ -503,12 +540,13 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                             height: getHorizontalSize(10),
                           ),
                           Text(
-                            item.details[0].description,
+                            descriptionStr,
                             style: AppStyle.txtRegular16Black,
                           ),
                         ],
                       ),
                     ),
+                    SizedBox(height: getVerticalSize(200),),
                   ],
                 ),
               ),

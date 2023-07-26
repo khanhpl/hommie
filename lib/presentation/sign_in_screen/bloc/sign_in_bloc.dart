@@ -101,6 +101,7 @@ class SignInBloc {
       print('Test loginWithGoogle statuscode: ${response.statusCode}');
       if (response.statusCode.toString() == '200') {
         bearerToken = json.decode(response.body)["data"].toString();
+        print('Test bearer: $bearerToken');
         user = User.fromJson(Jwt.parseJwt(bearerToken));
         print('Test user: ${user!.name}');
         var box = Hive.box('hommieBox');

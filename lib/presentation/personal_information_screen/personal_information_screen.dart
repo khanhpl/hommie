@@ -88,7 +88,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
               height: getVerticalSize(
                 54,
               ),
-              text: "Xác nhận",
+              text: "Cập nhật thông tin",
               margin: getMargin(
                 left: 20,
                 top: 18,

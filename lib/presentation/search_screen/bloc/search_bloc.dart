@@ -82,23 +82,29 @@ class SearchBloc{
     } finally {}
   }
   Future<void> getItems(String searchValue) async {
-    print('Test searchValue: $searchValue');
-
-    print('Test cateID: $cateID');
-    print('Test sub cateID: $subCateID');
     try {
       Uri url;
       if(searchValue.isEmpty){
-        if(subCateID != -1){
-          url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?subId=$subCateID");
+        if(cateID!=-1){
+          if(subCateID != -1){
+            url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?cateId=$cateID&subId=$subCateID");
+          }else{
+            url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?cateId=$cateID");
+          }
         }else{
           url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by");
+
         }
       }else{
-        if(subCateID != -1){
-          url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?subId=$subCateID&keyWord=$searchValue");
+        if(cateID!=-1){
+          if(subCateID != -1){
+            url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?cateId=$cateID&subId=$subCateID&keyWord=$searchValue");
+          }else{
+            url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?cateId=$cateID&keyWord=$searchValue");
+          }
         }else{
           url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/item/get-all-item-by?keyWord=$searchValue");
+
         }
       }
       final response = await http.post(
