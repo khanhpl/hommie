@@ -20,6 +20,18 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        bottomOpacity: 0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back_ios_new),
+        ),
+      ),
       backgroundColor: ColorConstant.whiteA700,
       resizeToAvoidBottomInset: false,
       body: Material(

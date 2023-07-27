@@ -64,6 +64,7 @@ class SignInBloc {
         Jwt.parseJwt(bearerToken);
         var box = Hive.box('hommieBox');
         box.put('isGoogleLogin', false);
+        box.put('isLogin', true);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Đăng nhập thành công'),
@@ -77,8 +78,7 @@ class SignInBloc {
     } finally {}
   }
   Future<void> loginWithGoogle(BuildContext context, String id, String fullName, String giveName, String familyName, String imageUrl, String email) async {
-
-
+    print('Test deviceID: $deviceID');
     try {
       var url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/user/login-with-google?fcmKey=$deviceID}");
       final response = await http.post(
@@ -106,7 +106,7 @@ class SignInBloc {
         print('Test user: ${user!.name}');
         var box = Hive.box('hommieBox');
         box.put('isGoogleLogin', true);
-
+        box.put('isLogin', true);
         Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false,);
       } else {
         showFailDialog(context, "Tài khoản hoặc mật khẩu không đúng");

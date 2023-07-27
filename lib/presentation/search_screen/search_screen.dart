@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:group_radio_button/group_radio_button.dart';
+import 'package:hive/hive.dart';
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/core/models/categories/categories.dart';
 import 'package:hommie/core/models/categories/category.dart';
@@ -27,11 +28,14 @@ class _SearchScreenState extends State<SearchScreen> {
   Category? selectedCate;
   SubCategory? selectedSubCate;
   final searchValueController = TextEditingController();
+  var box = Hive.box('hommieBox');
+  bool isLogin = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _searchBloc.eventController.sink.add(GetAllCate());
+    isLogin = (box.get('isLogin') != null) ? box.get('isLogin') : false;
   }
 
   @override

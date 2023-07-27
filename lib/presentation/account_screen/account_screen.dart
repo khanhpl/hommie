@@ -27,7 +27,7 @@ class _AccountScreenState extends State<AccountScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    isGoogleLogin = box.get('isGoogleLogin');
+    isGoogleLogin = (box.get('isGoogleLogin') != null) ? box.get('isGoogleLogin') : false;
   }
 
   @override
@@ -131,6 +131,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       context, AppRoutes.googleNav, (route) => false);
                   // _forgotBloc.eventController.sink
                   //     .add(LogoutEvent(context));
+                  box.put('isLogin', false);
                 },
                 child: tabElementWidget(context, "Đăng xuất", "", ""),
               ),

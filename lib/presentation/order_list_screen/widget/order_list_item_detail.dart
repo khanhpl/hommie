@@ -175,6 +175,28 @@ class _OrderDetailState extends State<OrderDetail> {
                               SizedBox(
                                 width: width / 2 - getHorizontalSize(32),
                                 child: Text(
+                                  "Phí vận chuyển:",
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  "${MoneyFormatter(amount: 40000).output.withoutFractionDigits} VNĐ",
+                                  textAlign: TextAlign.end,
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: getVerticalSize(15),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: width / 2 - getHorizontalSize(32),
+                                child: Text(
                                   "Tổng tiền:",
                                   style: AppStyle.txtRegular16Black,
                                 ),

@@ -1,9 +1,11 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:hommie/presentation/account_screen/account_screen.dart';
 import 'package:hommie/presentation/cart_screen/cart_screen.dart';
 import 'package:hommie/presentation/home_screen/home_screen.dart';
+import 'package:hommie/presentation/no_log_in_screen.dart';
 import 'package:hommie/presentation/order_list_screen/order_list_screen.dart';
 import 'package:hommie/presentation/search_screen/search_screen.dart';
 import 'package:hommie/presentation/splash_screen/splash_screen.dart';
@@ -27,6 +29,8 @@ class BottomBarNavigator extends StatefulWidget {
 class _BottomBarNavigatorState extends State<BottomBarNavigator> {
   int selectedIndex = 0;
   bool isBottomNav = true;
+  var box = Hive.box('hommieBox');
+  bool isLogin = false;
 
   _BottomBarNavigatorState(
       {required this.selectedIndex, required this.isBottomNav});
@@ -36,13 +40,13 @@ class _BottomBarNavigatorState extends State<BottomBarNavigator> {
       case 0:
         return const HomeScreen();
       case 1:
-        return const CartScreen();
+        return (isLogin) ? const CartScreen() : const NoLoginScreen();
       case 2:
         return const SizedBox();
       case 3:
-        return const OrderListScreen();
+        return (isLogin) ? const OrderListScreen() : const NoLoginScreen();
       case 4:
-        return const AccountScreen();
+        return (isLogin) ? const AccountScreen() : const NoLoginScreen();
 
       default:
         return const SplashScreen();
@@ -53,6 +57,13 @@ class _BottomBarNavigatorState extends State<BottomBarNavigator> {
     setState(() {
       selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isLogin = (box.get('isLogin') != null) ? box.get('isLogin') : false;
   }
 
   @override
@@ -67,7 +78,11 @@ class _BottomBarNavigatorState extends State<BottomBarNavigator> {
         child: InkWell(
           splashColor: ColorConstant.primaryColor,
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchScreen(),));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchScreen(),
+                ));
           },
           child: const Center(
             child: Icon(Icons.search),

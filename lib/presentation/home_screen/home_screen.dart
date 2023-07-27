@@ -1,4 +1,5 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
+import 'package:hive/hive.dart';
 import 'package:hommie/core/models/list_item/list_item.dart';
 import 'package:hommie/presentation/bottom_bar_navigator/bottom_bar_navigator.dart';
 import 'package:hommie/presentation/home_screen/bloc/home_bloc.dart';
@@ -31,13 +32,19 @@ class _HomeScreenState extends State<HomeScreen> {
   final _personalBloc = PersonalBloc();
   ListItem? listItem;
   List<PromoData> listPromo = [];
+  var box = Hive.box('hommieBox');
+  bool isLogin = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    isLogin = (box.get('isLogin') != null) ? box.get('isLogin') : false;
+    if (isLogin) {
+      promoBloc.eventController.sink.add(GetAllPromo());
+      _personalBloc.eventController.sink.add(GetUserInfo());
+    }
     _homeBloc.eventController.sink.add(GetAllItems());
-    promoBloc.eventController.sink.add(GetAllPromo());
-    _personalBloc.eventController.sink.add(GetUserInfo());
   }
 
   @override
@@ -78,9 +85,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 svgPath: ImageConstant.imgCart,
                                 margin: getMargin(top: 10, right: 2),
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => BottomBarNavigator(selectedIndex: 1, isBottomNav: true),));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            BottomBarNavigator(
+                                                selectedIndex: 1,
+                                                isBottomNav: true),
+                                      ));
                                 }),
-
                           ]))
                     ]),
                 body: Material(
@@ -119,12 +132,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           StreamBuilder<Object>(
                               stream: promoBloc.stateController.stream,
                               builder: (context, snapshot) {
-                                if(snapshot.hasData){
-                                  if(snapshot.data is ReturnAllPromo){
-                                    listPromo = (snapshot.data as ReturnAllPromo).listPromo;
+                                if (snapshot.hasData) {
+                                  if (snapshot.data is ReturnAllPromo) {
+                                    listPromo =
+                                        (snapshot.data as ReturnAllPromo)
+                                            .listPromo;
                                   }
                                 }
-                                if(listPromo.isEmpty){
+                                if (listPromo.isEmpty) {
                                   return Container(
                                     width: width,
                                     margin: getMarginOrPadding(
@@ -146,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Expanded(
                                           child: Container(
@@ -155,8 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 left: size.width * 0.07),
                                             child: Text(
                                               "Bạn đang có 0 ưu đãi",
-                                              style:
-                                              AppStyle.txtRobotoRomanMedium14,
+                                              style: AppStyle
+                                                  .txtRobotoRomanMedium14,
                                             ),
                                           ),
                                         ),
@@ -183,21 +198,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 right: size.width * 0.03,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: ColorConstant.primaryColor,
+                                                color:
+                                                    ColorConstant.primaryColor,
                                                 borderRadius:
-                                                BorderRadius.circular(
-                                                    size.height * 0.005),
+                                                    BorderRadius.circular(
+                                                        size.height * 0.005),
                                               ),
                                               child: Text("Xem",
-                                                  style:
-                                                  AppStyle.txtMedium14White),
+                                                  style: AppStyle
+                                                      .txtMedium14White),
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
                                   );
-                                }else{
+                                } else {
                                   return Container(
                                     width: width,
                                     margin: getMarginOrPadding(
@@ -219,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Expanded(
                                           child: Container(
@@ -228,14 +244,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 left: size.width * 0.07),
                                             child: Text(
                                               "Bạn đang có ${listPromo.length} ưu đãi",
-                                              style:
-                                              AppStyle.txtRobotoRomanMedium14,
+                                              style: AppStyle
+                                                  .txtRobotoRomanMedium14,
                                             ),
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => PromotionScreen(listPromo: listPromo),));
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PromotionScreen(
+                                                          listPromo: listPromo),
+                                                ));
                                           },
                                           child: Container(
                                             decoration: DottedDecoration(
@@ -258,14 +280,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 right: size.width * 0.03,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: ColorConstant.primaryColor,
+                                                color:
+                                                    ColorConstant.primaryColor,
                                                 borderRadius:
-                                                BorderRadius.circular(
-                                                    size.height * 0.005),
+                                                    BorderRadius.circular(
+                                                        size.height * 0.005),
                                               ),
                                               child: Text("Xem",
-                                                  style:
-                                                  AppStyle.txtMedium14White),
+                                                  style: AppStyle
+                                                      .txtMedium14White),
                                             ),
                                           ),
                                         ),

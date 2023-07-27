@@ -20,7 +20,7 @@ class PromoBloc {
   Future<void> getAllPromo() async {
     try {
       var url = Uri.parse(
-          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/promotion/get-all-promotion");
+          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/promotion/get-all-promotion?userId=${user!.id}");
       final response = await http.get(
         url,
         headers: <String, String>{

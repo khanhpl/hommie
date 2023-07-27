@@ -1,13 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hommie/core/app_export.dart';
 import 'package:path_provider/path_provider.dart';
+
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
   showFlutterNotification(message);
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
@@ -29,7 +31,7 @@ Future<void> setupFlutterNotifications() async {
     'high_importance_channel', // id
     'High Importance Notifications', // title
     description:
-    'This channel is used for important notifications.', // description
+        'This channel is used for important notifications.', // description
     importance: Importance.high,
   );
 
@@ -41,7 +43,7 @@ Future<void> setupFlutterNotifications() async {
   /// default FCM channel to enable heads up notifications.
   await flutterLocalNotificationsPlugin
       ?.resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   /// Update the iOS foreground notification presentation options to allow
@@ -93,7 +95,7 @@ void showFlutterNotificationForgeround(RemoteMessage message) {
           channelDescription: channel.description,
           // TODO add a proper drawable resource to android, for now using
           //      one that already exists in example app.
-          icon: 'launch_background',
+          icon: ImageConstant.imgFrame,
         ),
       ),
     );
@@ -101,18 +103,21 @@ void showFlutterNotificationForgeround(RemoteMessage message) {
 }
 
 /// Initialize the [FlutterLocalNotificationsPlugin] package.
- FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
+FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   Hive.initFlutter();
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
 
-  var box = await Hive.openBox('hommieBox');
-  await Firebase.initializeApp();
+  await Hive.openBox('hommieBox');
+  // Get any initial links
+  // final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
+  // print('Test init: ${initialLink.toString()}');
   // Set the background messaging handler early on, as a named top-level function
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
 
   if (!kIsWeb) {
     await setupFlutterNotifications();
@@ -120,16 +125,31 @@ Future main() async {
 
   String? token = await FirebaseMessaging.instance.getToken();
   deviceID = token.toString();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  // ]);
 
   runApp(const MyApp());
 }
 
-
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var box = Hive.box('hommieBox');
+  bool isGoogleLogin = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseMessaging.onMessage.listen(showFlutterNotificationForgeround);
+    isGoogleLogin = (box.get('isGoogleLogin') != null) ? box.get('isGoogleLogin') : false;
+    box.put('isLogin', false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +175,7 @@ class MyApp extends StatelessWidget {
       ),
       title: 'login',
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.googleNav,
+      initialRoute: (!isGoogleLogin) ? AppRoutes.homeScreen : AppRoutes.googleNav,
       routes: AppRoutes.routes,
     );
   }

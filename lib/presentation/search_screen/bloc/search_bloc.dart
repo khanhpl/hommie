@@ -112,7 +112,7 @@ class SearchBloc{
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Accept': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $bearerToken'
+          // 'Authorization': 'Bearer $bearerToken'
         },
         body: jsonEncode(
           <String, dynamic>{

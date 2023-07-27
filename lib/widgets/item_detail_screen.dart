@@ -1,5 +1,6 @@
 // ignore_for_file: no_logic_in_create_state, must_be_immutable
 
+import 'package:hive/hive.dart';
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/core/models/list_item/item_image.dart';
 import 'package:hommie/core/models/list_item/list_item_data.dart';
@@ -7,6 +8,7 @@ import 'package:hommie/core/models/list_item/detail_item.dart';
 import 'package:hommie/presentation/bottom_bar_navigator/bottom_bar_navigator.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_state.dart';
+import 'package:hommie/widgets/dialog/login_alert_dialog.dart';
 import 'package:hommie/widgets/option_widget.dart';
 
 import '../presentation/cart_screen/cart_bloc/cart_event.dart';
@@ -29,10 +31,13 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   String sizeString = '';
   String colorString = '';
   String descriptionStr = '';
+  var box = Hive.box('hommieBox');
+  bool isLogin = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    isLogin = (box.get('isLogin') != null) ? box.get('isLogin') : false;
     for(Detail detail in item.details){
 
       bool isDubSize = false;
@@ -120,25 +125,29 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               right: 20,
             ),
             onTap: () {
-              if(selectedItem != null){
-                if(selectedItem!.quantity >0){
-                  _cartBloc.eventController.sink.add(AddToCart(
-                      context: context, quantity: 1, itemDetailID: selectedItem!.id));
+              if(isLogin){
+                if(selectedItem != null){
+                  if(selectedItem!.quantity >0){
+                    _cartBloc.eventController.sink.add(AddToCart(
+                        context: context, quantity: 1, itemDetailID: selectedItem!.id));
+                  }else{
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Sản phẩm tạm hết hàng'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
                 }else{
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Sản phẩm tạm hết hàng'),
+                      content: Text('Vui lòng chọn loại trước khi thêm'),
                       duration: Duration(seconds: 2),
                     ),
                   );
                 }
               }else{
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Vui lòng chọn loại trước khi thêm'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
+                showLoginAlertDialog(context);
               }
             },
           ),

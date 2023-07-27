@@ -8,6 +8,7 @@ class PromoData {
   String description;
   double value;
   String status;
+  String image;
 
   PromoData({
     required this.id,
@@ -19,6 +20,7 @@ class PromoData {
     required this.description,
     required this.value,
     required this.status,
+    required this.image,
   });
 
   factory PromoData.fromJson(Map<String, dynamic> json) => PromoData(
@@ -31,6 +33,7 @@ class PromoData {
     description: json["description"],
     value: json["value"]?.toDouble(),
     status: json["status"],
+    image: json["image"]
   );
 
   Map<String, dynamic> toJson() => {

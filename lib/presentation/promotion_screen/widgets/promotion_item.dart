@@ -40,7 +40,7 @@ Widget promotionItem(BuildContext context, PromoData promo) {
             height: size.width * 0.12,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(""),
+                image: NetworkImage(promo.image),
                 fit: BoxFit.fill,
               ),
             ),
