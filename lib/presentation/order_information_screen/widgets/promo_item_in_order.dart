@@ -1,8 +1,11 @@
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/core/models/promo/promo_data.dart';
+import 'package:hommie/presentation/order_information_screen/order_bloc/order_bloc.dart';
+import 'package:hommie/presentation/order_information_screen/order_bloc/order_event.dart';
 import 'package:hommie/presentation/promotion_screen/widgets/promotion_detail_screen.dart';
 
-Widget promotionItem(BuildContext context, PromoData promo) {
+Widget promoItemInOrder(
+    BuildContext context, PromoData promo, OrderBloc orderBloc, double totalPrice) {
   var size = MediaQuery.of(context).size;
   return GestureDetector(
     onTap: () {
@@ -14,7 +17,7 @@ Widget promotionItem(BuildContext context, PromoData promo) {
     },
     child: Container(
       width: size.width,
-      height: size.height * 0.15,
+      height: size.height * 0.1,
       margin: EdgeInsets.only(
         left: size.width * 0.05,
         right: size.width * 0.05,
@@ -22,7 +25,7 @@ Widget promotionItem(BuildContext context, PromoData promo) {
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(
-            ImageConstant.coupon,
+            ImageConstant.selectedPromo,
           ),
           fit: BoxFit.fill,
         ),
@@ -33,7 +36,7 @@ Widget promotionItem(BuildContext context, PromoData promo) {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: size.width * 0.12,
+            width: size.width * 0.05,
           ),
           Container(
             width: size.width * 0.12,
@@ -46,51 +49,73 @@ Widget promotionItem(BuildContext context, PromoData promo) {
             ),
           ),
           SizedBox(
-            width: size.width * 0.12,
+            width: size.width * 0.05,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: size.width*0.5,
+                width: size.width * 0.48,
                 child: Text(
                   promo.title,
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
                   style: TextStyle(
                     fontSize: size.height * 0.02,
-                    color: ColorConstant.primaryColor,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-
-              SizedBox(
-                height: size.height * 0.01,
-              ),
               Text(
-                "Số lượng mã còn lại: ${promo.quantity}",
+                promo.code,
                 style: TextStyle(
-                  fontSize: size.height * 0.014,
-                  color: Colors.grey,
+                  fontSize: size.height * 0.018,
+                  color: Colors.black,
                   fontWeight: FontWeight.w400,
                 ),
               ),
               SizedBox(
-                height: size.height * 0.005,
+                height: size.height * 0.02,
               ),
-              Text(
-                "Hạn sử dụng đến ngày ${promo.dateExp.format()}",
-                style: TextStyle(
-                  fontSize: size.height * 0.014,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w400,
+              SizedBox(
+                width: size.width * 0.48,
+                child: Text(
+                  "Hạn sử dụng đến ngày ${promo.dateExp.toString().split(" ")[0]}",
+                  style: TextStyle(
+                    fontSize: size.height * 0.014,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
-
             ],
-          )
+          ),
+          Expanded(
+            child: TextButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(getSize(10))),
+              ),
+              onPressed: () {
+                if(totalPrice < promo.minValueOrder){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Đơn hàng chưa đạt giá trị tối thiểu'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }else{
+                  orderBloc.eventController.sink.add(ChoosePromo(promo: promo));
+                  Navigator.pop(context);
+                }
+              },
+              child: Text(
+                "Chọn",
+                style: AppStyle.txtRobotoRomanMedium14,
+              ),
+            ),
+          ),
         ],
       ),
     ),

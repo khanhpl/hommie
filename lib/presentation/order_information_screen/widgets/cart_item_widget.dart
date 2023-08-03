@@ -1,7 +1,9 @@
 import 'package:hommie/core/app_export.dart';
+import 'package:hommie/core/models/cart_items/cart_item_data.dart';
+import 'package:hommie/core/models/cart_items/cart_items.dart';
 import 'package:hommie/core/models/order/list_item.dart';
 
-Widget itemInOrderList(BuildContext context, ListItem item) {
+Widget cartItemWidget(BuildContext context, CartItemData item) {
   return Material(
     child: Container(
       width: width,
@@ -9,13 +11,17 @@ Widget itemInOrderList(BuildContext context, ListItem item) {
         top: 10,
         bottom: 10,
       ),
+      margin: getMargin(
+        left: 40,
+        right: 40,
+      ),
       decoration: BoxDecoration(
           color: Colors.white,
           border: Border(
               top: BorderSide(
-            width: 0.5,
-            color: Colors.grey.withOpacity(0.5),
-          ))),
+                width: 0.5,
+                color: Colors.grey.withOpacity(0.5),
+              ))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +55,7 @@ Widget itemInOrderList(BuildContext context, ListItem item) {
                       ),
                       const Spacer(),
                       Text(
-                        "x${item.orderQuantity}",
+                        "x${item.quantity}",
                         style: AppStyle.txtRegular14Black,
                       ),
                     ],
@@ -61,7 +67,7 @@ Widget itemInOrderList(BuildContext context, ListItem item) {
                     children: [
                       const Spacer(),
                       Text(
-                        "${MoneyFormatter(amount: item.price/item.orderQuantity).output.withoutFractionDigits} VNĐ/sp",
+                        "Giá tiền: ${MoneyFormatter(amount: item.price).output.withoutFractionDigits} VNĐ/sp",
                         style: AppStyle.txtRegular14Black,
                       ),
                     ],

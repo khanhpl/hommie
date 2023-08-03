@@ -9,7 +9,7 @@ Future<void> showConfirmOrderDialog(
     String address,
     String phone,
     String promoCode,
-    double totalPrice) async {
+    double totalPrice, String receiverName) async {
   final orderBloc = OrderBloc();
   var size = MediaQuery.of(context).size;
   return showDialog<void>(
@@ -109,6 +109,7 @@ Future<void> showConfirmOrderDialog(
                                 address: address,
                                 phone: phone,
                                 promoCode: promoCode,
+                                receiverName: receiverName,
                               ),
                             );
                           } else if (paymentType == "Trả Trước") {
@@ -121,6 +122,7 @@ Future<void> showConfirmOrderDialog(
                                 phone: phone,
                                 promoCode: promoCode,
                                 totalPrice: totalPrice,
+                                receiverName: receiverName,
                               ),
                             );
                           }

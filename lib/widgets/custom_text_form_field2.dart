@@ -1,28 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:hommie/core/app_export.dart';
 
 class CustomTextFormField2 extends StatelessWidget {
-  CustomTextFormField2(
-      {this.shape,
-      this.padding,
-      this.variant,
-      this.fontStyle,
-      this.alignment,
-      this.width,
-      this.margin,
-      this.controller,
-      this.focusNode,
-      this.isObscureText = false,
-      this.textInputAction = TextInputAction.next,
-      this.textInputType = TextInputType.text,
-      this.maxLines,
-      this.hintText,
-      this.prefix,
-      this.prefixConstraints,
-      this.suffix,
-      this.suffixConstraints,
-      this.validator,
-      this.labelText, this.isEnabled});
+  CustomTextFormField2({
+    this.shape,
+    this.padding,
+    this.variant,
+    this.fontStyle,
+    this.alignment,
+    this.width,
+    this.margin,
+    this.controller,
+    this.focusNode,
+    this.isObscureText = false,
+    this.textInputAction = TextInputAction.next,
+    this.textInputType = TextInputType.text,
+    this.maxLines,
+    this.hintText,
+    this.prefix,
+    this.prefixConstraints,
+    this.suffix,
+    this.suffixConstraints,
+    this.validator,
+    this.labelText,
+    this.isEnabled,
+  });
 
   TextFormFieldShape? shape;
 
@@ -83,7 +84,6 @@ class CustomTextFormField2 extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         focusNode: focusNode,
-
         style: _setFontStyle(),
         obscureText: isObscureText!,
         textInputAction: textInputAction,
@@ -130,6 +130,7 @@ class CustomTextFormField2 extends StatelessWidget {
         );
     }
   }
+
   _setFontStyle() {
     switch (fontStyle) {
       default:
@@ -162,7 +163,8 @@ class CustomTextFormField2 extends StatelessWidget {
       default:
         return OutlineInputBorder(
           borderRadius: _setOutlineBorderRadius(),
-          borderSide: BorderSide(width: 1, color: ColorConstant.primaryColor.withOpacity(0.5)),
+          borderSide: BorderSide(
+              width: 1, color: ColorConstant.primaryColor.withOpacity(0.5)),
         );
     }
   }

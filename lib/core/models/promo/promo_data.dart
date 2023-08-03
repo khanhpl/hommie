@@ -9,6 +9,9 @@ class PromoData {
   double value;
   String status;
   String image;
+  double minValueOrder;
+  double maxValueDiscount;
+  int quantity;
 
   PromoData({
     required this.id,
@@ -21,6 +24,9 @@ class PromoData {
     required this.value,
     required this.status,
     required this.image,
+    required this.minValueOrder,
+    required this.maxValueDiscount,
+    required this.quantity,
   });
 
   factory PromoData.fromJson(Map<String, dynamic> json) => PromoData(
@@ -33,7 +39,10 @@ class PromoData {
     description: json["description"],
     value: json["value"]?.toDouble(),
     status: json["status"],
-    image: json["image"]
+    image: json["image"],
+    minValueOrder: json["minValueOrder"],
+    maxValueDiscount: json["maxValueDiscount"],
+    quantity: json["quantity"],
   );
 
   Map<String, dynamic> toJson() => {

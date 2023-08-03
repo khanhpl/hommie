@@ -1,4 +1,4 @@
-class Datum {
+class CartItemData {
   int cartItemId;
   int itemDetailId;
   String itemName;
@@ -9,7 +9,7 @@ class Datum {
   int quantity;
   double price;
 
-  Datum({
+  CartItemData({
     required this.cartItemId,
     required this.itemDetailId,
     required this.itemName,
@@ -21,7 +21,7 @@ class Datum {
     required this.price,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory CartItemData.fromJson(Map<String, dynamic> json) => CartItemData(
         cartItemId: json["cartItemId"],
         itemDetailId: json["itemDetailId"],
         itemName: json["itemName"],

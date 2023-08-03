@@ -2,26 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:hommie/core/app_export.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  CustomTextFormField(
-      {this.shape,
-      this.padding,
-      this.variant,
-      this.fontStyle,
-      this.alignment,
-      this.width,
-      this.margin,
-      this.controller,
-      this.focusNode,
-      this.isObscureText = false,
-      this.textInputAction = TextInputAction.next,
-      this.textInputType = TextInputType.text,
-      this.maxLines,
-      this.hintText,
-      this.prefix,
-      this.prefixConstraints,
-      this.suffix,
-      this.suffixConstraints,
-      this.validator});
+  CustomTextFormField({
+    this.shape,
+    this.padding,
+    this.variant,
+    this.fontStyle,
+    this.alignment,
+    this.width,
+    this.margin,
+    this.controller,
+    this.focusNode,
+    this.isObscureText = false,
+    this.textInputAction = TextInputAction.next,
+    this.textInputType = TextInputType.text,
+    this.maxLines,
+    this.hintText,
+    this.prefix,
+    this.prefixConstraints,
+    this.suffix,
+    this.suffixConstraints,
+    this.validator,
+  });
 
   TextFormFieldShape? shape;
 
@@ -85,7 +86,6 @@ class CustomTextFormField extends StatelessWidget {
         maxLines: maxLines ?? 1,
         decoration: _buildDecoration(),
         validator: validator,
-
       ),
     );
   }
@@ -93,7 +93,6 @@ class CustomTextFormField extends StatelessWidget {
   _buildDecoration() {
     return InputDecoration(
       hintText: hintText ?? "",
-
       hintStyle: _setFontHintStyle(),
       border: _setBorderStyle(),
       enabledBorder: _setBorderStyle(),
@@ -123,6 +122,7 @@ class CustomTextFormField extends StatelessWidget {
         );
     }
   }
+
   _setFontHintStyle() {
     switch (fontStyle) {
       default:

@@ -39,42 +39,66 @@ class _PaidHistoryPanelState extends State<PendingPanel> {
               }
             }
           }
-          return Material(
-            child: Container(
-              color: Colors.white,
-              width: size.width,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: size.height * 0.03,
-                    ),
-                    (listOrder.isEmpty)
-                        ? const SizedBox()
-                        : ListView.separated(
-                            padding: const EdgeInsets.all(0),
-                            physics: const BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (context, index) => GestureDetector(
-                              onTap: () {},
-                              child: orderListItemWidget(context, listOrder[index]),
+
+          if (snapshot.connectionState == ConnectionState.active) {
+            return Material(
+              child: Container(
+                color: Colors.white,
+                width: size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: size.height * 0.03,
+                      ),
+                      (listOrder.isEmpty)
+                          ? Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: getHorizontalSize(300),
+                            height: getVerticalSize(300),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image:
+                                  AssetImage(ImageConstant.imgNoData),
+                                  fit: BoxFit.fill),
                             ),
-                            separatorBuilder: (context, index) => Container(
-                              width: size.width,
-                              margin:
-                                  EdgeInsets.only(bottom: size.height * 0.02),
-                              color: Colors.black.withOpacity(0.1),
-                            ),
-                            itemCount: listOrder.length,
                           ),
-                  ],
+                          Text("Chưa có đơn hàng ở trạng thái này", style: AppStyle.txtRegular16Black,),
+                        ],
+                      )
+                          : ListView.separated(
+                        padding: const EdgeInsets.all(0),
+                        physics: const BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) => GestureDetector(
+                          onTap: () {},
+                          child: orderListItemWidget(context, listOrder[index]),
+                        ),
+                        separatorBuilder: (context, index) => Container(
+                          width: size.width,
+                          margin:
+                          EdgeInsets.only(bottom: size.height * 0.02),
+                          color: Colors.black.withOpacity(0.1),
+                        ),
+                        itemCount: listOrder.length,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
+            );
+          } else {
+            return Center(
+              child: LoadingAnimationWidget.discreteCircle(
+                  color: ColorConstant.primaryColor, size: getSize(50)),
+            );
+          }
         });
   }
 }

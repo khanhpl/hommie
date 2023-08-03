@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>179638660806-n3hmk5q0vm8vl8rvdhmkk4u3vknlumuf.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.179638660806-n3hmk5q0vm8vl8rvdhmkk4u3vknlumuf</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>179638660806-7j4q9mktvf8q45psdl3oe3a3h9vg0jca.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCYv-W1zq2QxagSZS1D5WNsLgu0ICodX4Q</string>
+	<key>GCM_SENDER_ID</key>
+	<string>179638660806</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.hommie</string>
+	<key>PROJECT_ID</key>
+	<string>hommie-b7459</string>
+	<key>STORAGE_BUCKET</key>
+	<string>hommie-b7459.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:179638660806:ios:ddc3990e421b2a5c1e31c7</string>
+</dict>
+</plist>

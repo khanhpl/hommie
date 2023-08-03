@@ -9,6 +9,7 @@ import 'package:hommie/presentation/bottom_bar_navigator/bottom_bar_navigator.da
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_state.dart';
 import 'package:hommie/widgets/dialog/login_alert_dialog.dart';
+import 'package:hommie/widgets/item_status_widget.dart';
 import 'package:hommie/widgets/option_widget.dart';
 
 import '../presentation/cart_screen/cart_bloc/cart_event.dart';
@@ -67,9 +68,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         }
       }
       if(descriptionStr.isEmpty){
-        descriptionStr = "-${detail.description}";
+        descriptionStr = "- ${detail.description}";
       }else{
-        descriptionStr = "$descriptionStr\n-${detail.description}";
+        descriptionStr = "$descriptionStr\n- "
+            "${detail.description}";
       }
     }
   }
@@ -126,22 +128,22 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
             ),
             onTap: () {
               if(isLogin){
-                if(selectedItem != null){
-                  if(selectedItem!.quantity >0){
+                if(item.status == "Còn Hàng"){
+                  if(selectedItem != null){
                     _cartBloc.eventController.sink.add(AddToCart(
                         context: context, quantity: 1, itemDetailID: selectedItem!.id));
                   }else{
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Sản phẩm tạm hết hàng'),
+                        content: Text('Vui lòng chọn loại trước khi thêm'),
                         duration: Duration(seconds: 2),
                       ),
                     );
                   }
-                }else{
+                } else if(item.status == "Tạm Hết Hàng"){
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Vui lòng chọn loại trước khi thêm'),
+                      content: Text('Sản phẩm tạm hết hàng'),
                       duration: Duration(seconds: 2),
                     ),
                   );
@@ -199,12 +201,6 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                 maxLines: null,
                               ),
                               const Spacer(),
-                              Text(
-                                "Số lượng: ${selectedItem!= null ? selectedItem!.quantity : ""}",
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtRegular14Bluegray700,
-                              ),
 
                               Text(
                                 " | ",
@@ -218,6 +214,23 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtRegular14Bluegray700,
                               ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: getHorizontalSize(5),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+
+                              Text(
+                                "Tình trạng: ",
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtRegular14Bluegray700,
+                              ),
+                              itemStatusWidget(item.status),
                             ],
                           ),
                         ],
@@ -282,7 +295,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return Container(
-                                    height: getHorizontalSize(250),
+                                    height: height,
                                     padding: getPadding(all: 10),
                                     width: width,
                                     decoration: BoxDecoration(

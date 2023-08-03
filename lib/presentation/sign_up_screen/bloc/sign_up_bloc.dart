@@ -76,6 +76,7 @@ class SignUpBloc {
         );
         Navigator.pop(context);
       } else {
+        print('Test response: ${response.body.toString()}');
         showFailDialog(context, "Email đã được đăng ký");
       }
     } finally {}

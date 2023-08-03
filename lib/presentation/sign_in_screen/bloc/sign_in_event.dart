@@ -30,3 +30,7 @@ class LoginWithGoogle extends SignInEvent {
   String imgUrl;
   String email;
 }
+
+class SignOut extends SignInEvent{
+
+}

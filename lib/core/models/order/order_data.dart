@@ -9,6 +9,9 @@ class OrderData {
   String orderDate;
   String phoneNumber;
   String address;
+  String userReceive;
+  String reason;
+  String paymentType;
   OrderData({
     required this.orderId,
     required this.orderCode,
@@ -17,7 +20,10 @@ class OrderData {
     required this.orderStatus,
     required this.orderDate,
     required this.phoneNumber,
-    required this.address
+    required this.address,
+    required this.userReceive,
+    required this.reason,
+    required this.paymentType,
   });
 
   factory OrderData.fromJson(Map<String, dynamic> json) => OrderData(
@@ -29,6 +35,9 @@ class OrderData {
     orderDate: json["orderDate"],
     phoneNumber: json["phoneNumber"],
     address: json["address"],
+    userReceive: json["userReceive"],
+    reason: (json["reason"] != null) ? json["reason"] : "",
+    paymentType: json["paymentType"],
   );
 
   Map<String, dynamic> toJson() => {

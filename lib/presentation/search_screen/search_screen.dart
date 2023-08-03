@@ -318,10 +318,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             textInputAction: TextInputAction.done,
                             textInputType: TextInputType.emailAddress,
                             isObscureText: false,
-                            prefix: const Icon(
-                              Icons.search,
-                              color: Colors.black,
-                            ),
+
                           ),
                           Expanded(
                             child: Align(

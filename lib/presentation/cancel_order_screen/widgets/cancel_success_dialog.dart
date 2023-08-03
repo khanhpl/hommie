@@ -41,7 +41,7 @@ Future<void> showCancelSuccessDialog(BuildContext context) async {
                   ),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.yellow,
+                        backgroundColor: ColorConstant.primaryColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30)),
                       ),
@@ -53,7 +53,7 @@ Future<void> showCancelSuccessDialog(BuildContext context) async {
                           child: Text(
                             'Quản lý đơn hàng',
                             textAlign: TextAlign.center,
-                            style: AppStyle.txtRegular16Black,
+                            style: AppStyle.txtRegular16,
                           ),
                         ),
                         Icon(

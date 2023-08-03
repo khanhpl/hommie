@@ -10,11 +10,13 @@ import 'package:hommie/presentation/promotion_screen/bloc/promo_event.dart';
 import 'package:hommie/presentation/promotion_screen/bloc/promo_state.dart';
 import 'package:hommie/presentation/promotion_screen/promotion_screen.dart';
 import 'package:hommie/widgets/custom_item.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/app_export.dart';
 import '../../core/models/promo/promo_data.dart';
 import '../personal_information_screen/personal_bloc/personal_bloc.dart';
 import '../personal_information_screen/personal_bloc/personal_event.dart';
+import '../promotion_screen/widgets/promotion_item.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -41,9 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     isLogin = (box.get('isLogin') != null) ? box.get('isLogin') : false;
     if (isLogin) {
-      promoBloc.eventController.sink.add(GetAllPromo());
       _personalBloc.eventController.sink.add(GetUserInfo());
     }
+    promoBloc.eventController.sink.add(GetAllPromo());
+
     _homeBloc.eventController.sink.add(GetAllItems());
   }
 
@@ -67,34 +70,89 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: getSize(60),
                         imagePath: ImageConstant.imgFrame,
                         margin: getMargin(left: 19, top: 8, bottom: 7)),
-                    title: AppbarImage(
-                        height: getVerticalSize(41),
-                        width: getHorizontalSize(100),
-                        imagePath: ImageConstant.imgDecorShopPm,
-                        margin: getMargin(left: 80)),
+                    title: Padding(
+                      padding: getPadding(right: 10),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "TiemHomie",
+                          style: AppStyle.txtRobotoRomanBold24Pr,
+                        ),
+                      ),
+                    ),
                     actions: [
-                      Container(
-                          height: getVerticalSize(28.96),
-                          width: getHorizontalSize(29.540009),
-                          margin: getMargin(left: 17, top: 5, right: 23),
-                          child:
-                              Stack(alignment: Alignment.topRight, children: [
-                            AppbarImage(
-                                height: getVerticalSize(26),
-                                width: getHorizontalSize(27),
-                                svgPath: ImageConstant.imgCart,
-                                margin: getMargin(top: 10, right: 2),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            BottomBarNavigator(
-                                                selectedIndex: 1,
-                                                isBottomNav: true),
-                                      ));
-                                }),
-                          ]))
+                      PopupMenuButton(
+                          icon: Icon(
+                            Icons.support_agent_outlined,
+                            color: ColorConstant.blueGray700,
+                            size: getSize(30),
+                          ),
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem<int>(
+                                value: 0,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.phone,
+                                      color: Colors.green,
+                                    ),
+                                    Text(
+                                      "  0123456789",
+                                      style: TextStyle(
+                                        fontSize: size.height * 0.022,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem<int>(
+                                value: 1,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.facebook,
+                                      color: Colors.blueGrey,
+                                    ),
+                                    Text(
+                                      "  Facebook",
+                                      style: TextStyle(
+                                        fontSize: size.height * 0.022,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ];
+                          },
+                          onSelected: (value) {
+                            setState(() async {
+                              if (value == 0) {
+                                final Uri url = Uri.parse(
+                                    'tel://0123456789');
+                                if (!await launchUrl(
+                                  url,
+                                  mode:
+                                  LaunchMode.externalNonBrowserApplication,
+                                )) {
+                                  throw Exception('Could not launch $url');
+                                }
+
+                              } else if (value == 1) {
+                                final Uri url = Uri.parse(
+                                    'https://www.facebook.com/tiemhomie.sg/');
+                                if (!await launchUrl(
+                                  url,
+                                  mode:
+                                      LaunchMode.externalNonBrowserApplication,
+                                )) {
+                                  throw Exception('Could not launch $url');
+                                }
+                              }
+                            });
+                          })
                     ]),
                 body: Material(
                   child: Container(
@@ -117,18 +175,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             child: const CustomCarouselImage(),
                           ),
-                          Padding(
-                            padding: getPadding(
-                              top: 22,
-                              left: 10,
-                            ),
-                            child: Text(
-                              "Khuyến mãi",
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.left,
-                              style: AppStyle.txtRobotoRomanBold24,
-                            ),
-                          ),
                           StreamBuilder<Object>(
                               stream: promoBloc.stateController.stream,
                               builder: (context, snapshot) {
@@ -139,161 +185,166 @@ class _HomeScreenState extends State<HomeScreen> {
                                             .listPromo;
                                   }
                                 }
-                                if (listPromo.isEmpty) {
-                                  return Container(
-                                    width: width,
-                                    margin: getMarginOrPadding(
-                                      top: 15,
-                                      left: 22,
-                                      right: 22,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                          size.height * 0.005),
-                                      border: Border.all(
-                                        width: 1,
-                                        color: ColorConstant.primaryColor
-                                            .withOpacity(0.5),
-                                      ),
-                                      color: ColorConstant.primaryColor
-                                          .withOpacity(0.1),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                if (snapshot.connectionState ==
+                                    ConnectionState.active) {
+                                  if (listPromo.isNotEmpty) {
+                                    return Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Expanded(
-                                          child: Container(
-                                            alignment: Alignment.centerLeft,
-                                            padding: EdgeInsets.only(
-                                                left: size.width * 0.07),
-                                            child: Text(
-                                              "Bạn đang có 0 ưu đãi",
-                                              style: AppStyle
-                                                  .txtRobotoRomanMedium14,
-                                            ),
+                                        Padding(
+                                          padding: getPadding(
+                                            top: 22,
+                                            left: 10,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                "Mã giảm giá",
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.left,
+                                                style: AppStyle
+                                                    .txtRobotoRomanBold24,
+                                              ),
+                                              const Spacer(),
+                                              Padding(
+                                                padding: getPadding(right: 20),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              PromotionScreen(
+                                                                  listPromo:
+                                                                      listPromo),
+                                                        ));
+                                                  },
+                                                  child: Text(
+                                                    "Xem tất cả >",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.left,
+                                                    style: AppStyle
+                                                        .txtRobotoRomanMedium16,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        GestureDetector(
-                                          onTap: () {},
-                                          child: Container(
-                                            decoration: DottedDecoration(
-                                              color: ColorConstant.primaryColor,
-                                              strokeWidth: 0.5,
-                                              linePosition: LinePosition.left,
-                                            ),
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.only(
-                                                left: size.width * 0.05,
-                                                right: size.width * 0.05,
-                                                top: size.height * 0.01,
-                                                bottom: size.height * 0.01,
+                                        SizedBox(
+                                          height: getVerticalSize(15),
+                                        ),
+                                        SizedBox(
+                                          height: getVerticalSize(120),
+                                          width: width,
+                                          child: ListView.separated(
+                                              scrollDirection: Axis.horizontal,
+                                              padding: const EdgeInsets.all(0),
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                return SizedBox(
+                                                    width: width,
+                                                    child: promotionItem(
+                                                        context,
+                                                        listPromo[index]));
+                                              },
+                                              separatorBuilder: (context,
+                                                      index) =>
+                                                  SizedBox(
+                                                    width: size.width * 0.03,
+                                                  ),
+                                              itemCount: (listPromo.length <= 4)
+                                                  ? listPromo.length
+                                                  : 4),
+                                        ),
+                                      ],
+                                    );
+                                  } else {
+                                    return Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: getPadding(
+                                            top: 22,
+                                            left: 10,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                "Mã giảm giá",
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.left,
+                                                style: AppStyle
+                                                    .txtRobotoRomanBold24,
                                               ),
-                                              margin: EdgeInsets.only(
-                                                top: size.height * 0.01,
-                                                bottom: size.height * 0.01,
-                                                left: size.width * 0.03,
-                                                right: size.width * 0.03,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    ColorConstant.primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        size.height * 0.005),
-                                              ),
-                                              child: Text("Xem",
+                                              const Spacer(),
+                                              Padding(
+                                                padding: getPadding(right: 20),
+                                                child: Text(
+                                                  "Xem tất cả >",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.left,
                                                   style: AppStyle
-                                                      .txtMedium14White),
-                                            ),
+                                                      .txtRobotoRomanMedium16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          width: width,
+                                          margin: getPadding(
+                                            left: 40,
+                                            top: 15,
+                                            right: 40,
+                                          ),
+                                          padding: getPadding(all: 10),
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                getSize(10)),
+                                            border: Border.all(
+                                                width: 1,
+                                                color:
+                                                    ColorConstant.primaryColor),
+                                          ),
+                                          child: Text(
+                                            "Hiện không có mã giảm giá khả dụng",
+                                            style: AppStyle.txtMedium14BlackPr,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
                                       ],
-                                    ),
-                                  );
+                                    );
+                                  }
                                 } else {
                                   return Container(
                                     width: width,
-                                    margin: getMarginOrPadding(
-                                      top: 15,
-                                      left: 22,
-                                      right: 22,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                          size.height * 0.005),
-                                      border: Border.all(
-                                        width: 1,
-                                        color: ColorConstant.primaryColor
-                                            .withOpacity(0.5),
-                                      ),
-                                      color: ColorConstant.primaryColor
-                                          .withOpacity(0.1),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            alignment: Alignment.centerLeft,
-                                            padding: EdgeInsets.only(
-                                                left: size.width * 0.07),
-                                            child: Text(
-                                              "Bạn đang có ${listPromo.length} ưu đãi",
-                                              style: AppStyle
-                                                  .txtRobotoRomanMedium14,
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PromotionScreen(
-                                                          listPromo: listPromo),
-                                                ));
-                                          },
-                                          child: Container(
-                                            decoration: DottedDecoration(
-                                              color: ColorConstant.primaryColor,
-                                              strokeWidth: 0.5,
-                                              linePosition: LinePosition.left,
-                                            ),
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.only(
-                                                left: size.width * 0.05,
-                                                right: size.width * 0.05,
-                                                top: size.height * 0.01,
-                                                bottom: size.height * 0.01,
-                                              ),
-                                              margin: EdgeInsets.only(
-                                                top: size.height * 0.01,
-                                                bottom: size.height * 0.01,
-                                                left: size.width * 0.03,
-                                                right: size.width * 0.03,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    ColorConstant.primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        size.height * 0.005),
-                                              ),
-                                              child: Text("Xem",
-                                                  style: AppStyle
-                                                      .txtMedium14White),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                    height: getVerticalSize(100),
+                                    alignment: Alignment.center,
+                                    child:
+                                        LoadingAnimationWidget.discreteCircle(
+                                            color: ColorConstant.primaryColor,
+                                            size: getSize(50)),
                                   );
                                 }
                               }),
@@ -303,7 +354,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               left: 10,
                             ),
                             child: Text(
-                              "Sản phẩm mới",
+                              "Sản phẩm hiện có",
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.left,
                               style: AppStyle.txtRobotoRomanBold24,
@@ -319,11 +370,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     160,
                                   ),
                                   mainAxisExtent: getVerticalSize(
-                                    226,
+                                    250,
                                   ),
                                   // childAspectRatio: 2 / 3,
                                   crossAxisSpacing: getVerticalSize(20),
-                                  mainAxisSpacing: getHorizontalSize(30),
+                                  mainAxisSpacing: getHorizontalSize(10),
                                 ),
                                 itemCount: (listItem != null)
                                     ? ((listItem!.data.length < 4)

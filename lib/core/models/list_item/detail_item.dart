@@ -26,7 +26,7 @@ class Detail {
     quantity: json["quantity"],
     itemImages: List<ItemImage>.from(json["itemImages"].map((x) => ItemImage.fromJson(x))),
     price: json["price"],
-    description: json["description"],
+    description: (json["description"] != null) ? json["description"] : "",
   );
 
   Map<String, dynamic> toJson() => {

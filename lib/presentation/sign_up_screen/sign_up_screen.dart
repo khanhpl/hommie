@@ -131,8 +131,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 .add(InputFullName(fullName: value.toString()));
 
                             if (value == null ||
-                                value.toString().trim().isEmpty) {
+                                value.toString().trim().isEmpty ) {
                               return "Vui lòng nhập họ và tên";
+                            }else if(value.toString().length >= 50){
+                              return "Họ và tên chỉ được tối đa 50 ký tự";
                             }
                             return null;
                           },

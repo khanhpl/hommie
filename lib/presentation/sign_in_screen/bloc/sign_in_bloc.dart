@@ -80,7 +80,7 @@ class SignInBloc {
   Future<void> loginWithGoogle(BuildContext context, String id, String fullName, String giveName, String familyName, String imageUrl, String email) async {
     print('Test deviceID: $deviceID');
     try {
-      var url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/user/login-with-google?fcmKey=$deviceID}");
+      var url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/user/login-with-google?fcmKey=$deviceID");
       final response = await http.post(
         url,
         headers: <String, String>{
@@ -107,9 +107,39 @@ class SignInBloc {
         var box = Hive.box('hommieBox');
         box.put('isGoogleLogin', true);
         box.put('isLogin', true);
+
         Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false,);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đăng nhập thành công'),
+            duration: Duration(seconds: 1),
+          ),
+        );
       } else {
         showFailDialog(context, "Tài khoản hoặc mật khẩu không đúng");
+        print('Test fail: ${response.body.toString()}');
+      }
+    } finally {}
+  }
+  Future<void> signOut() async {
+
+    try {
+      var url = Uri.parse("https://tiemhommie-0835ad80e9db.herokuapp.com/api/user/logout?userName=${user!.email}");
+      final response = await http.put(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(
+          <String, String>{
+          },
+        ),
+      );
+      print('Test loginWithGoogle statuscode: ${response.statusCode}');
+      if (response.statusCode.toString() == '200') {
+
+      } else {
         print('Test fail: ${response.body.toString()}');
       }
     } finally {}

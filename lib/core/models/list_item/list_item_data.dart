@@ -13,6 +13,7 @@ class ListItemData {
   String cateName;
   dynamic checkNumber;
   int buyNumber;
+  String status;
 
   ListItemData({
     required this.id,
@@ -27,6 +28,7 @@ class ListItemData {
     required this.cateName,
     this.checkNumber,
     required this.buyNumber,
+    required this.status,
   });
 
   factory ListItemData.fromJson(Map<String, dynamic> json) => ListItemData(
@@ -42,6 +44,7 @@ class ListItemData {
     cateName: json["cateName"],
     checkNumber: json["checkNumber"],
     buyNumber: json["buyNumber"],
+    status: json["status"],
   );
 
   Map<String, dynamic> toJson() => {

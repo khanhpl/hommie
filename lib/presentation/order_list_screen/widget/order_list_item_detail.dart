@@ -1,9 +1,11 @@
 // ignore_for_file: no_logic_in_create_state, must_be_immutable
 
 import 'package:hommie/core/app_export.dart';
+import 'package:hommie/core/models/order/list_item.dart';
 import 'package:hommie/core/models/order/order_data.dart';
 import 'package:hommie/presentation/order_list_screen/widget/custom_order_button.dart';
 import 'package:hommie/presentation/order_list_screen/widget/item_in_order.dart';
+import 'package:hommie/widgets/order_status_widget.dart';
 
 class OrderDetail extends StatefulWidget {
   OrderDetail({Key? key, required this.orderData}) : super(key: key);
@@ -20,6 +22,14 @@ class _OrderDetailState extends State<OrderDetail> {
 
   @override
   Widget build(BuildContext context) {
+    int calDiscount(){
+      double discount = 0;
+      for(ListItem item in orderData.listItems){
+        discount += item.price;
+      }
+      discount = discount - orderData.totalPrice + 40000;
+      return discount.ceil();
+    }
     return StreamBuilder(
       stream: null,
       builder: (context, snapshot) {
@@ -39,7 +49,7 @@ class _OrderDetailState extends State<OrderDetail> {
                 padding: getPadding(right: 45),
                 child: Text(
                   "Chi Tiết Đơn Hàng",
-                  style: AppStyle.txtRobotoRomanBold36,
+                  style: AppStyle.txtRobotoRomanBold24,
                 ),
               ),
             ),
@@ -99,6 +109,28 @@ class _OrderDetailState extends State<OrderDetail> {
                               SizedBox(
                                 width: width / 2 - getHorizontalSize(32),
                                 child: Text(
+                                  "Người nhận hàng:",
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  orderData.userReceive,
+                                  textAlign: TextAlign.end,
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: getVerticalSize(15),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: width / 2 - getHorizontalSize(32),
+                                child: Text(
                                   "Số điện thoại:",
                                   style: AppStyle.txtRegular16Black,
                                 ),
@@ -133,7 +165,95 @@ class _OrderDetailState extends State<OrderDetail> {
                                 ),
                               ),
                             ],
+                          ), SizedBox(
+                            height: getVerticalSize(15),
                           ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: width / 2 - getHorizontalSize(16),
+                                child: Text(
+                                  "Phương thức thanh toán:",
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  orderData.paymentType,
+                                  textAlign: TextAlign.end,
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: getVerticalSize(15),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: width / 2 - getHorizontalSize(32),
+                                child: Text(
+                                  "Thời gian đặt hàng:",
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                 "${orderData.orderDate.split("-")[2]}/${orderData.orderDate.split("-")[1]}/${orderData.orderDate.split("-")[0]}",
+                                  textAlign: TextAlign.end,
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: getVerticalSize(15),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: width / 2 - getHorizontalSize(32),
+                                child: Text(
+                                  "Trạng thái:",
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                    child: orderStatusWidget(orderData.orderStatus)),
+                              ),
+                            ],
+                          ),
+                          (orderData.orderStatus == "Hủy Đơn Hàng") ?  Padding(
+                            padding: getPadding(
+                              top: 15,
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: width / 2 - getHorizontalSize(32),
+                                  child: Text(
+                                    "Lý do hủy: ",
+                                    maxLines: null,
+                                    style: AppStyle.txtRegular16Black,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    orderData.reason,
+                                    textAlign: TextAlign.end,
+                                    style: AppStyle.txtRegular16Black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ): const SizedBox(),
                           SizedBox(
                             height: getVerticalSize(15),
                           ),
@@ -175,6 +295,28 @@ class _OrderDetailState extends State<OrderDetail> {
                               SizedBox(
                                 width: width / 2 - getHorizontalSize(32),
                                 child: Text(
+                                  "Tổng tiền hàng:",
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  "${MoneyFormatter(amount: orderData.totalPrice - 40000 + calDiscount()).output.withoutFractionDigits} VNĐ",
+                                  textAlign: TextAlign.end,
+                                  style: AppStyle.txtRegular16Black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: getVerticalSize(15),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: width / 2 - getHorizontalSize(32),
+                                child: Text(
                                   "Phí vận chuyển:",
                                   style: AppStyle.txtRegular16Black,
                                 ),
@@ -188,6 +330,29 @@ class _OrderDetailState extends State<OrderDetail> {
                               ),
                             ],
                           ),
+                          (calDiscount() != 0) ?
+                          Padding(
+                            padding: getPadding(top: 15),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: width / 2 - getHorizontalSize(32),
+                                  child: Text(
+                                    "Ưu đãi:",
+                                    style: AppStyle.txtRegular16Black,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    "-${MoneyFormatter(amount: calDiscount().toDouble()).output.withoutFractionDigits} VNĐ",
+                                    textAlign: TextAlign.end,
+                                    style: AppStyle.txtRegular16Black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ) : const SizedBox(),
                           SizedBox(
                             height: getVerticalSize(15),
                           ),
@@ -197,7 +362,7 @@ class _OrderDetailState extends State<OrderDetail> {
                               SizedBox(
                                 width: width / 2 - getHorizontalSize(32),
                                 child: Text(
-                                  "Tổng tiền:",
+                                  "Tổng thanh toán tiền:",
                                   style: AppStyle.txtRegular16Black,
                                 ),
                               ),
@@ -205,55 +370,18 @@ class _OrderDetailState extends State<OrderDetail> {
                                 child: Text(
                                   "${MoneyFormatter(amount: orderData.totalPrice).output.withoutFractionDigits} VNĐ",
                                   textAlign: TextAlign.end,
-                                  style: AppStyle.txtRegular16Black,
+                                  style: TextStyle(
+                                    color: ColorConstant.primaryColor,
+                                    fontSize: getFontSize(
+                                      16,
+                                    ),
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: getVerticalSize(15),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: width / 2 - getHorizontalSize(32),
-                                child: Text(
-                                  "Thời gian đặt hàng:",
-                                  style: AppStyle.txtRegular16Black,
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  orderData.orderDate,
-                                  textAlign: TextAlign.end,
-                                  style: AppStyle.txtRegular16Black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: getVerticalSize(15),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: width / 2 - getHorizontalSize(32),
-                                child: Text(
-                                  "Trạng thái:",
-                                  style: AppStyle.txtRegular16Black,
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  orderData.orderStatus,
-                                  textAlign: TextAlign.end,
-                                  style: AppStyle.txtRegular16Black,
-                                ),
-                              ),
-                            ],
-                          ),
+
                         ],
                       ),
                     ),

@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:hommie/core/models/order/order.dart';
+import 'package:hommie/presentation/bottom_bar_navigator/bottom_bar_navigator.dart';
 import 'package:hommie/presentation/cancel_order_screen/widgets/cancel_success_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:hommie/core/app_export.dart';
@@ -23,7 +24,7 @@ class OrderBloc {
       }
 
       if (event is CreateOrder) {
-        createOrder(event.context, event.feeShip, event.paymentType, event.address, event.phone, event.promoCode);
+        createOrder(event.context, event.feeShip, event.paymentType, event.address, event.phone, event.promoCode, event.receiverName);
       }
       if(event is GetAllOrder){
         getAllOrder();
@@ -37,15 +38,15 @@ class OrderBloc {
       }
       if(event is CreateOrderPrePaid){
         // print('Test CreateOrderPrePaid: ${event.totalPrice}-${event.paymentType}-${event.address}-${event.feeShip}-${event.phone}-${event.promoCode}');
-        createOrderPrepaid(event.context, event.feeShip, event.paymentType, event.address, event.phone, event.promoCode, event.totalPrice);
+        createOrderPrepaid(event.context, event.feeShip, event.paymentType, event.address, event.phone, event.promoCode, event.totalPrice, event.receiverName);
       }
     });
   }
 
-  Future<void> createOrder(BuildContext context, int feeShip, String paymentType, String address, String phone, String promoCode) async {
+  Future<void> createOrder(BuildContext context, int feeShip, String paymentType, String address, String phone, String promoCode, String receiverName) async {
     try {
       var url = Uri.parse(
-          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/order/create-order-with-postpaid?userId=${user!.id}&feeShip=$feeShip&paymentType=$paymentType&shipAddress=$address&phoneNumber=$phone&promoCode=$promoCode");
+          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/order/create-order-with-postpaid?userId=${user!.id}&feeShip=$feeShip&paymentType=$paymentType&shipAddress=$address&phoneNumber=$phone&promoCode=$promoCode&userReceive=$receiverName");
       final response = await http.post(
         url,
         headers: <String, String>{
@@ -65,17 +66,18 @@ class OrderBloc {
             duration: Duration(seconds: 2),
           ),
         );
-        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false);
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomBarNavigator(selectedIndex: 3, isBottomNav: true),), (route) => false);
       } else {
+        print('test res :${response.body.toString()}');
         print('createOrder: ');
       }
     } finally {}
   }
 
-  Future<void> createOrderPrepaid(BuildContext context, int feeShip, String paymentType, String address, String phone, String promoCode, double totalPrice) async {
+  Future<void> createOrderPrepaid(BuildContext context, int feeShip, String paymentType, String address, String phone, String promoCode, double totalPrice, String receiverName) async {
     try {
       var url = Uri.parse(
-          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/order/create-order-with-prepay?totalPrice=$totalPrice&paymentType=$paymentType&shipAddress=$address&feeShip=$feeShip&userId=${user!.id}&phoneNumber=$phone&promoCode=$promoCode");
+          "https://tiemhommie-0835ad80e9db.herokuapp.com/api/order/create-order-with-prepay?totalPrice=$totalPrice&paymentType=$paymentType&shipAddress=$address&feeShip=$feeShip&userId=${user!.id}&phoneNumber=$phone&promoCode=$promoCode&userReceive=$receiverName");
       final response = await http.post(
         url,
         headers: <String, String>{

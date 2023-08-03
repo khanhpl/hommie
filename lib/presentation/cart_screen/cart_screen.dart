@@ -1,6 +1,6 @@
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/core/models/cart_items/cart_items.dart';
-import 'package:hommie/core/models/cart_items/datum.dart';
+import 'package:hommie/core/models/cart_items/cart_item_data.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_event.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_state.dart';
@@ -32,7 +32,6 @@ class _CartScreenState extends State<CartScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data is ReturnCartItems) {
-              print('Có load data nè');
               cartItems = (snapshot.data as ReturnCartItems).cartItems;
             }
           }
@@ -42,18 +41,17 @@ class _CartScreenState extends State<CartScreen> {
                 height: getVerticalSize(60),
                 leadingWidth: 45,
                 leading: AppbarImage(
-                    height: getVerticalSize(26),
-                    width: getHorizontalSize(27),
+                    height: getSize(60),
+                    width: getSize(60),
                     svgPath: ImageConstant.imgCart,
-                    margin: getMargin(top: 10, right: 2),
-                    onTap: () {}),
+                    margin: getMargin(left: 19, top: 8, bottom: 7)),
                 title: Align(
                   alignment: Alignment.center,
                   child: Padding(
                     padding: getPadding(right: 45),
                     child: Text(
                       "Giỏ hàng",
-                      style: AppStyle.txtRobotoRomanBold36,
+                      style: AppStyle.txtRobotoRomanBold24,
                     ),
                   ),
                 ),
@@ -71,14 +69,14 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 onTap: () {
                   double totalPrice = 0;
-                  for (Datum item in cartItems!.data) {
+                  for (CartItemData item in cartItems!.data) {
                     totalPrice += item.price * item.quantity;
                   }
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            OrderInformationScreen(totalPrice: totalPrice),
+                            OrderInformationScreen(totalPrice: totalPrice, items: cartItems!),
                       ));
                 },
               ) : const SizedBox(),
@@ -142,22 +140,22 @@ class _CartScreenState extends State<CartScreen> {
                 height: getVerticalSize(60),
                 leadingWidth: 45,
                 leading: AppbarImage(
-                    height: getVerticalSize(26),
-                    width: getHorizontalSize(27),
+                    height: getSize(60),
+                    width: getSize(60),
                     svgPath: ImageConstant.imgCart,
-                    margin: getMargin(top: 10, right: 2),
-                    onTap: () {}),
+                    margin: getMargin(left: 19, top: 8, bottom: 7)),
                 title: Align(
                   alignment: Alignment.center,
                   child: Padding(
                     padding: getPadding(right: 45),
                     child: Text(
                       "Giỏ hàng",
-                      style: AppStyle.txtRobotoRomanBold36,
+                      style: AppStyle.txtRobotoRomanBold24,
                     ),
                   ),
                 ),
               ),
+
               floatingActionButton: CustomButton(
                 height: getVerticalSize(
                   54,
@@ -171,14 +169,14 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 onTap: () {
                   double totalPrice = 0;
-                  for (Datum item in cartItems!.data) {
+                  for (CartItemData item in cartItems!.data) {
                     totalPrice += item.price * item.quantity;
                   }
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            OrderInformationScreen(totalPrice: totalPrice),
+                            OrderInformationScreen(totalPrice: totalPrice,items: cartItems!),
                       ));
                 },
               ),

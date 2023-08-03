@@ -24,7 +24,7 @@ class CreateOrder extends OrderEvent {
       required this.paymentType,
       required this.address,
       required this.phone,
-      required this.promoCode});
+      required this.promoCode, required this.receiverName});
 
   BuildContext context;
   int feeShip;
@@ -32,6 +32,7 @@ class CreateOrder extends OrderEvent {
   String address;
   String phone;
   String promoCode;
+  String receiverName;
 }
 
 class CreateOrderPrePaid extends OrderEvent {
@@ -42,7 +43,7 @@ class CreateOrderPrePaid extends OrderEvent {
       required this.address,
       required this.phone,
       required this.promoCode,
-      required this.totalPrice});
+      required this.totalPrice, required this.receiverName});
 
   BuildContext context;
   int feeShip;
@@ -51,6 +52,7 @@ class CreateOrderPrePaid extends OrderEvent {
   String phone;
   String promoCode;
   double totalPrice;
+  String receiverName;
 }
 
 class GetAllOrder extends OrderEvent {}

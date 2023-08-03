@@ -47,4 +47,6 @@ class ImageConstant {
   static String couponDetail = "assets/images/coupon_detail.png";
 
   static String coupon = "assets/images/coupon.png";
+  static String selectedPromo = "assets/images/selected_promo.png";
+  static String imgNoData = "assets/images/img_no_data.jpg";
 }

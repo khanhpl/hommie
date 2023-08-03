@@ -48,29 +48,32 @@ class _CustomCarouselImage2State extends State<CustomCarouselImage2> {
             ))
                 .toList(),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: images.asMap().entries.map((entry) {
-              return GestureDetector(
-                onTap: () => _controller.animateToPage(entry.key),
-                child: Container(
-                  width: getVerticalSize(12),
-                  height: getHorizontalSize(12),
-                  margin: getMarginOrPadding(
-                    left: 8,
-                    right: 8,
-                    bottom: 4,
-                    top: 4,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: images.asMap().entries.map((entry) {
+                return GestureDetector(
+                  onTap: () => _controller.animateToPage(entry.key),
+                  child: Container(
+                    width: getVerticalSize(12),
+                    height: getHorizontalSize(12),
+                    margin: getMarginOrPadding(
+                      left: 8,
+                      right: 8,
+                      bottom: 4,
+                      top: 4,
+                    ),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: (Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black)
+                            .withOpacity(_current == entry.key ? 0.6 : 0.2)),
                   ),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: (Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black)
-                          .withOpacity(_current == entry.key ? 0.6 : 0.2)),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),

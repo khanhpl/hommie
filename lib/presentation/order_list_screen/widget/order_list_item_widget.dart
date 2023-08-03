@@ -1,5 +1,6 @@
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/presentation/order_list_screen/widget/order_list_item_detail.dart';
+import 'package:hommie/widgets/order_status_widget.dart';
 import 'package:money_formatter/money_formatter.dart';
 
 import '../../../core/models/order/order_data.dart';
@@ -49,7 +50,27 @@ Widget orderListItemWidget(BuildContext context, OrderData data) {
                       ),
                     ),
                     SizedBox(
-                      height: size.height * 0.01,
+                      height: size.height * 0.005,
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Người nhận: ${data.userReceive}",
+                          maxLines: null,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: size.height * 0.018,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(
+                      height: size.height * 0.005,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -76,7 +97,7 @@ Widget orderListItemWidget(BuildContext context, OrderData data) {
                       ],
                     ),
                     SizedBox(
-                      height: size.height * 0.01,
+                      height: size.height * 0.005,
                     ),
 
                     Row(
@@ -84,7 +105,7 @@ Widget orderListItemWidget(BuildContext context, OrderData data) {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "Trạng thái: ${data.orderStatus}",
+                          "Ngày đặt: ${data.orderDate}",
                           maxLines: null,
                           style: TextStyle(
                             color: Colors.black,
@@ -92,7 +113,6 @@ Widget orderListItemWidget(BuildContext context, OrderData data) {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-
                       ],
                     ),
 

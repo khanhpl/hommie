@@ -5,32 +5,40 @@ import 'dart:developer';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:hommie/core/app_export.dart';
+import 'package:hommie/core/models/cart_items/cart_items.dart';
 import 'package:hommie/core/models/promo/promo_data.dart';
+import 'package:hommie/presentation/bottom_bar_navigator/bottom_bar_navigator.dart';
 import 'package:hommie/presentation/order_information_screen/order_bloc/order_bloc.dart';
-import 'package:hommie/presentation/order_information_screen/order_bloc/order_event.dart';
 import 'package:hommie/presentation/order_information_screen/order_bloc/order_state.dart';
+import 'package:hommie/presentation/order_information_screen/widgets/add_promo_screen.dart';
+import 'package:hommie/presentation/order_information_screen/widgets/cart_item_widget.dart';
 import 'package:hommie/presentation/order_information_screen/widgets/confirm_order_dialog.dart';
 import 'package:hommie/presentation/order_information_screen/widgets/coupon_widget.dart';
-import 'package:hommie/presentation/payment_screen/payment_for_order_screen.dart';
 import 'package:hommie/presentation/promotion_screen/bloc/promo_bloc.dart';
 import 'package:hommie/presentation/promotion_screen/bloc/promo_event.dart';
+import 'package:hommie/widgets/dialog/success_dialog.dart';
 
 import '../../widgets/custom_text_form_field2.dart';
+import '../../widgets/dialog/fail_dialog.dart';
+import '../order_list_screen/widget/item_in_order.dart';
 import '../promotion_screen/bloc/promo_state.dart';
 
 class OrderInformationScreen extends StatefulWidget {
-  OrderInformationScreen({Key? key, required this.totalPrice})
+  OrderInformationScreen(
+      {Key? key, required this.totalPrice, required this.items})
       : super(key: key);
   double totalPrice;
+  CartItems items;
 
   @override
   State<OrderInformationScreen> createState() =>
-      _OrderInformationScreenState(totalPrice: totalPrice);
+      _OrderInformationScreenState(totalPrice: totalPrice, items: items);
 }
 
 class _OrderInformationScreenState extends State<OrderInformationScreen> {
-  _OrderInformationScreenState({required this.totalPrice});
+  _OrderInformationScreenState({required this.totalPrice, required this.items});
 
+  CartItems items;
   double totalPrice;
   final _orderBloc = OrderBloc();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -44,13 +52,14 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
   String _groupValue = "Thanh toán khi nhận hàng";
   TextEditingController addressController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController receiverNameController = TextEditingController();
   FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
+
   Future<void> initDynamicLinks() async {
     dynamicLinks.onLink.listen((dynamicLinkData) {
-      print('Aloooooooooooooooooooooooooooooooooooooooooooooooo');
       final Uri uri = dynamicLinkData.link;
       final queryParams = uri.path;
-      log("abc ${queryParams}");
+      log("abc ${queryParams} 222");
       if (queryParams.isNotEmpty) {
         if (queryParams == "/success") {
           // Navigator.pushAndRemoveUntil(
@@ -63,12 +72,19 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
           //           navigatorPath: '/homeScreen'),
           //     ),
           //         (route) => false);
-          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false);
-          print('Thanh toán thành công nè');
+          Navigator.pushAndRemoveUntil(
+              context, MaterialPageRoute(builder: (context) => BottomBarNavigator(selectedIndex: 3, isBottomNav: true),), (route) => false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Thanh toán và tạo đơn hàng thành công'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+          print('Thanh toán thành công');
         } else {
-          // showFailDialog(
-          //     context, "Thanh toán không thành công. Vui lòng thử lại sau");
-          print('Thanh toán thất bại nè');
+            showFailDialog(
+                context, "Thanh toán không thành công. Vui lòng thử lại sau");
+          print('Thanh toán thất bại');
         }
       } else {}
     }).onError((error) {
@@ -76,41 +92,62 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
       print(error.message);
     });
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     promoBloc.eventController.sink.add(GetAllPromo());
-    if(user != null){
+    if (user != null) {
       phoneController = TextEditingController(text: user!.phoneNumber);
+
+      receiverNameController = TextEditingController(text: user!.name);
     }
-    if(userAddress.isNotEmpty){
+    if (userAddress.isNotEmpty) {
       addressController = TextEditingController(text: userAddress);
       phoneController = TextEditingController(text: phone);
     }
     initDynamicLinks();
   }
-  double calTotalPrice(){
-    double calculatedTotalPrice = 0;
-    if(selectedPromo != null){
-      if(selectedPromo!.value % 1 == 0){
-        calculatedTotalPrice = totalPrice + 40000 - selectedPromo!.value;
-      }else{
-        calculatedTotalPrice = totalPrice + 40000 - totalPrice*selectedPromo!.value;
-      }
 
-    }else{
-     calculatedTotalPrice =  totalPrice + 40000;
+  double getDiscountPrice() {
+    double discountPrice = 0;
+    if (selectedPromo != null) {
+      if (selectedPromo!.value % 1 == 0) {
+        discountPrice = selectedPromo!.value;
+      } else {
+        if (totalPrice * selectedPromo!.value >=
+            selectedPromo!.maxValueDiscount) {
+          discountPrice = selectedPromo!.maxValueDiscount;
+        } else {
+          discountPrice = totalPrice * selectedPromo!.value;
+        }
+      }
+    }
+    return discountPrice;
+  }
+
+  double calTotalPrice() {
+    double calculatedTotalPrice = 0;
+    if (selectedPromo != null) {
+      if (selectedPromo!.value % 1 == 0) {
+        calculatedTotalPrice = totalPrice + 40000 - selectedPromo!.value;
+      } else {
+        calculatedTotalPrice = totalPrice + 40000 - getDiscountPrice();
+      }
+    } else {
+      calculatedTotalPrice = totalPrice + 40000;
     }
     return calculatedTotalPrice;
   }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: _orderBloc.stateController.stream,
       builder: (context, snapshot) {
-        if(snapshot.hasData){
-          if(snapshot.data is ReturnPromo){
+        if (snapshot.hasData) {
+          if (snapshot.data is ReturnPromo) {
             selectedPromo = (snapshot.data as ReturnPromo).promo;
           }
         }
@@ -153,7 +190,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                           left: 20,
                         ),
                         child: Text(
-                          "Tổng tiền",
+                          "Tổng thanh toán",
                           style: AppStyle.txtRobotoRomanBold20,
                         ),
                       ),
@@ -189,7 +226,11 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                               "Trả Sau",
                               addressController.text.trim(),
                               phoneController.text.trim(),
-                              (selectedPromo != null) ? selectedPromo!.code : "null", totalPrice + 40000 - ((selectedPromo != null) ? totalPrice*selectedPromo!.value : 0));
+                              (selectedPromo != null)
+                                  ? selectedPromo!.code
+                                  : "null",
+                              calTotalPrice(),
+                              receiverNameController.text.trim());
                         } else if (_groupValue == "Thanh toán với ví Momo") {
                           showConfirmOrderDialog(
                               context,
@@ -197,7 +238,11 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                               "Trả Trước",
                               addressController.text.trim(),
                               phoneController.text.trim(),
-                              (selectedPromo != null) ? selectedPromo!.code : "null", totalPrice + 40000 - ((selectedPromo != null) ? totalPrice*selectedPromo!.value : 0));
+                              (selectedPromo != null)
+                                  ? selectedPromo!.code
+                                  : "null",
+                              calTotalPrice(),
+                              receiverNameController.text.trim());
                         }
                       }
                     },
@@ -224,7 +269,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                           left: 20,
                         ),
                         child: Text(
-                          "Địa chỉ nhận hàng",
+                          "Địa chỉ nhận hàng:",
                           style: AppStyle.txtRobotoRomanBold20,
                         ),
                       ),
@@ -239,8 +284,6 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                         textInputAction: TextInputAction.done,
                         textInputType: TextInputType.streetAddress,
                         validator: (value) {
-                          _orderBloc.eventController.sink.add(
-                              InputAddress(address: value!.toString().trim()));
                           if (value.toString().trim().isEmpty) {
                             return "Vui lòng không để trống địa chỉ";
                           }
@@ -253,7 +296,34 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                           left: 20,
                         ),
                         child: Text(
-                          "Số điện thoại",
+                          "Tên người nhận:",
+                          style: AppStyle.txtRobotoRomanBold20,
+                        ),
+                      ),
+                      CustomTextFormField2(
+                        focusNode: FocusNode(),
+                        margin: getMargin(
+                          top: 20,
+                          left: 30,
+                          right: 30,
+                        ),
+                        controller: receiverNameController,
+                        textInputAction: TextInputAction.done,
+                        textInputType: TextInputType.streetAddress,
+                        validator: (value) {
+                          if (value.toString().trim().isEmpty) {
+                            return "Vui lòng không để trống tên người nhận";
+                          }
+                          return null;
+                        },
+                      ),
+                      Padding(
+                        padding: getPadding(
+                          top: 30,
+                          left: 20,
+                        ),
+                        child: Text(
+                          "Số điện thoại:",
                           style: AppStyle.txtRobotoRomanBold20,
                         ),
                       ),
@@ -268,9 +338,8 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                         textInputAction: TextInputAction.done,
                         textInputType: TextInputType.phone,
                         validator: (value) {
-                          _orderBloc.eventController.sink
-                              .add(InputPhone(phone: value!.toString().trim()));
-                          if (value.toString().trim().isEmpty || value.toString().trim().length != 10) {
+                          if (value.toString().trim().isEmpty ||
+                              value.toString().trim().length != 10) {
                             return "Số điện thoại phải có 10 ký tự";
                           }
                           return null;
@@ -282,7 +351,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                           left: 20,
                         ),
                         child: Text(
-                          "Phương thức thanh toán",
+                          "Phương thức thanh toán:",
                           style: AppStyle.txtRobotoRomanBold20,
                         ),
                       ),
@@ -305,6 +374,34 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: getPadding(
+                          top: 30,
+                          left: 20,
+                        ),
+                        child: Text(
+                          "Sản phẩm được chọn:",
+                          style: AppStyle.txtRobotoRomanBold20,
+                        ),
+                      ),
+                      SizedBox(height: getVerticalSize(15)),
+                      ListView.separated(
+                        padding: const EdgeInsets.all(0),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return cartItemWidget(context, items.data[index]);
+                        },
+                        separatorBuilder: (context, index) => const SizedBox(),
+                        itemCount: items.data.length,
+                      ),
+                      Container(
+                        height: 0.5,
+                        width: width,
+                        margin: getMargin(left: 40, right: 40),
+                        color: Colors.grey.withOpacity(0.5),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -315,7 +412,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                               left: 20,
                             ),
                             child: Text(
-                              "Số tiền mua hàng",
+                              "Tổng tiền hàng:",
                               style: AppStyle.txtRobotoRomanBold20,
                             ),
                           ),
@@ -342,7 +439,7 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                               left: 20,
                             ),
                             child: Text(
-                              "Phí vận chuyển",
+                              "Phí vận chuyển:",
                               style: AppStyle.txtRobotoRomanBold20,
                             ),
                           ),
@@ -353,14 +450,43 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                               right: 20,
                             ),
                             child: Text(
-                              "40.000 VNĐ",
+                              "40,000 VNĐ",
                               style: AppStyle.txtMedium14Black,
                             ),
                           ),
                         ],
                       ),
+                      (selectedPromo != null)
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: getPadding(
+                                    top: 30,
+                                    left: 20,
+                                  ),
+                                  child: Text(
+                                    "Áp dụng ưu đãi:",
+                                    style: AppStyle.txtRobotoRomanBold20,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Padding(
+                                  padding: getPadding(
+                                    top: 30,
+                                    right: 20,
+                                  ),
+                                  child: Text(
+                                    "- ${MoneyFormatter(amount: getDiscountPrice()).output.withoutFractionDigits} VNĐ",
+                                    style: AppStyle.txtMedium14BlackPr,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           StreamBuilder<Object>(
@@ -370,7 +496,8 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                                   if (snapshot.data is ReturnAllPromo) {
                                     listPromo =
                                         (snapshot.data as ReturnAllPromo)
-                                            .listPromo.cast<PromoData>();
+                                            .listPromo
+                                            .cast<PromoData>();
                                   }
                                 }
                                 return Padding(
@@ -387,67 +514,18 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                                               getSize(20))),
                                     ),
                                     onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text(
-                                              'Mã giảm giá',
-                                              style:
-                                                  AppStyle.txtRobotoRomanBold24,
-                                            ),
-                                            content: StatefulBuilder(
-                                              builder: (context, setState) {
-                                                return Material(
-                                                  child: Container(
-                                                    width: width,
-                                                    height:
-                                                        getVerticalSize(400),
-                                                    color: Colors.white,
-                                                    child:
-                                                        SingleChildScrollView(
-                                                      scrollDirection:
-                                                          Axis.vertical,
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          ListView.separated(
-
-                                                            itemBuilder:
-                                                                (context,
-                                                                    index) {
-                                                              return couponWidget(
-                                                                  context, listPromo[index], _orderBloc);
-                                                            },
-                                                            separatorBuilder:
-                                                                (context,
-                                                                        index) =>
-                                                                    SizedBox(
-                                                              height:
-                                                                  getVerticalSize(
-                                                                      10),
-                                                            ),
-                                                            itemCount: listPromo.length,
-                                                            padding: const EdgeInsets.all(0),
-                                                            scrollDirection: Axis.vertical,
-                                                            physics: const BouncingScrollPhysics(),
-                                                            shrinkWrap: true,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        },
-                                      );
+                                      if (listPromo.isNotEmpty) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddPromoScreen(
+                                                orderBloc: _orderBloc,
+                                                listPromo: listPromo,
+                                                totalPrice: totalPrice,
+                                              ),
+                                            ));
+                                      }
                                     },
                                     child: Text(
                                       "Chọn mã giảm",
@@ -456,17 +534,30 @@ class _OrderInformationScreenState extends State<OrderInformationScreen> {
                                   ),
                                 );
                               }),
-                          const Spacer(),
-                          Padding(
-                            padding: getPadding(
-                              top: 30,
-                              right: 10,
+                          (selectedPromo != null) ? Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              width: getHorizontalSize(200),
+                              margin: getPadding(
+                                left: 20,
+                                top: 30,
+                                right: 10,
+                              ),
+                              padding: getPadding(all: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(getSize(10)),
+                                border: Border.all(
+                                    width: 1,
+                                    color: ColorConstant.primaryColor),
+                              ),
+                              child: Text(
+                                "Mã: ${(selectedPromo != null) ? selectedPromo!.title : ""}",
+                                style: AppStyle.txtMedium14Black,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                            child: Text(
-                             "Mã: ${ (selectedPromo != null) ? selectedPromo!.title : ""}",
-                              style: AppStyle.txtMedium14Black,
-                            ),
-                          ),
+                          ) : const SizedBox(),
                         ],
                       ),
                       SizedBox(

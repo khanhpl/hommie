@@ -87,13 +87,13 @@ class _TestDeepLinkState extends State<TestDeepLinkScreen> {
                     children: <Widget>[
                       ElevatedButton(
                         onPressed: !_isCreatingLink
-                            ? () => _createDynamicLink(false, '/home_screen')
+                            ? () => _createDynamicLink(false, '/success')
                             : null,
                         child: const Text('Get Long Link'),
                       ),
                       ElevatedButton(
                         onPressed: !_isCreatingLink
-                            ? () => _createDynamicLink(true, '/home_screen')
+                            ? () => _createDynamicLink(true, '/success')
                             : null,
                         child: const Text('Get Short Link'),
                       ),

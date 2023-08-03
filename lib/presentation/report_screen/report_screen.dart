@@ -1,31 +1,65 @@
 // ignore_for_file: no_logic_in_create_state
 
 // ignore_for_file: must_be_immutable
+import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:hommie/core/app_export.dart';
 import 'package:hommie/presentation/report_screen/bloc/report_bloc.dart';
 import 'package:hommie/presentation/report_screen/widgets/showConfirmReportDialog.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../widgets/custom_text_form_field2.dart';
-import '../cancel_order_screen/widgets/confirm_cancel_dialog.dart';
+
 class ReportScreen extends StatefulWidget {
   ReportScreen({Key? key, required this.orderCode}) : super(key: key);
   String orderCode;
+
   @override
   State<ReportScreen> createState() => _ReportScreenState(orderCode: orderCode);
 }
 
 class _ReportScreenState extends State<ReportScreen> {
   _ReportScreenState({required this.orderCode});
+
   String orderCode;
   final reportBloc = ReportBloc();
-  List<String> cancelReason = ["Thời gian giao hàng quá lâu",
+  List<String> cancelReason = [
+    "Thời gian giao hàng quá lâu",
     "Giao nhầm loại sản phẩm",
     "Sản phẩm không giống mô tả",
-    "Khác"];
+    "Khác"
+  ];
   String groupValue = "Khác";
   final noteController = TextEditingController();
+  String reportImage = "";
+  late File imageFileReport;
+  XFile? pickedFileReport;
+  UploadTask? uploadTaskReport;
+  bool isAddReportImg = false;
+
+  _getReportImageFromGallery() async {
+    pickedFileReport = (await ImagePicker().pickImage(
+      source: ImageSource.camera,
+    ));
+    if (pickedFileReport != null) {
+      setState(() {
+        imageFileReport = File(pickedFileReport!.path);
+      });
+    }
+    isAddReportImg = true;
+    final path =
+        'images/${pickedFileReport!.name}';
+    final file = File(pickedFileReport!.path);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    uploadTaskReport = ref.putFile(file);
+
+    final snapshot = await uploadTaskReport!.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
+    reportImage = urlDownload;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +82,6 @@ class _ReportScreenState extends State<ReportScreen> {
             ),
           ),
         ),
-
       ),
       floatingActionButton: CustomButton(
         height: getVerticalSize(
@@ -60,9 +93,9 @@ class _ReportScreenState extends State<ReportScreen> {
           top: 18,
           right: 20,
         ),
-        onTap: (){
+        onTap: () {
           String content = "$groupValue - ${noteController.text}";
-          showConfirmReportDialog(context, orderCode, content);
+          showConfirmReportDialog(context, orderCode, content, reportImage);
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -94,6 +127,57 @@ class _ReportScreenState extends State<ReportScreen> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: getPadding(
+                    left: 20,
+                    bottom: 15,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorConstant.primaryColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(getSize(20))),
+                        ),
+                        onPressed: () {
+
+                          _getReportImageFromGallery();
+                        },
+                        child: Text(
+                          "Hình ảnh mô tả",
+                          style: AppStyle.txtMedium14White,
+                        ),
+                      ),
+                      Text(
+                        " (Nếu có)",
+                        style: AppStyle.txtRegular16Black,
+                      ),
+                    ],
+                  ),
+                ),
+                (isAddReportImg)
+                    ? Container(
+                        width: width,
+                        height: getVerticalSize(400),
+                        margin: getPadding(
+                          left: 20,
+                          right: 20,
+                          bottom: 15,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 0.5, color: ColorConstant.primaryColor),
+                          borderRadius: BorderRadius.circular(getSize(15)),
+                          image: DecorationImage(
+                            image: FileImage(imageFileReport),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      )
+                    : const SizedBox(),
                 CustomTextFormField2(
                   hintText: "Ghi chú",
                   focusNode: FocusNode(),
@@ -109,6 +193,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   textInputType: TextInputType.emailAddress,
                   isObscureText: false,
                 ),
+                SizedBox(height: getVerticalSize(200),),
               ],
             ),
           ),

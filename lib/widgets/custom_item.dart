@@ -2,6 +2,7 @@ import 'package:hommie/core/app_export.dart';
 import 'package:hommie/core/models/list_item/list_item_data.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
 import 'package:hommie/widgets/item_detail_screen.dart';
+import 'package:hommie/widgets/item_status_widget.dart';
 
 // ignore: must_be_immutable
 class CustomItem extends StatelessWidget {
@@ -20,7 +21,7 @@ class CustomItem extends StatelessWidget {
           },
           child: Container(
             height: getVerticalSize(
-              209,
+              225,
             ),
             width: getHorizontalSize(
               160,
@@ -126,19 +127,32 @@ class CustomItem extends StatelessWidget {
                                 style: AppStyle.txtRegular10Bluegray7007f,
                               ),
                             ),
+                            // Align(
+                            //   alignment: Alignment.centerRight,
+                            //   child: Padding(
+                            //     padding: getPadding(
+                            //       top: 0,
+                            //     ),
+                            //     child: Text(
+                            //       "${item.buyNumber} lượt mua",
+                            //       overflow: TextOverflow.ellipsis,
+                            //       textAlign: TextAlign.left,
+                            //       style: AppStyle.txtRegular14Bluegray700,
+                            //     ),
+                            //   ),
+                            // ),
                             Padding(
                               padding: getPadding(
                                 left: 5,
-                                top: 9,
                               ),
                               child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
                                     padding: getPadding(
-                                      top: 12,
+                                      top: 0,
                                     ),
                                     child: Text(
                                       "${MoneyFormatter(amount: item.details[0].price.toDouble()).output.withoutFractionDigits} VND",
@@ -151,6 +165,9 @@ class CustomItem extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                                child: itemStatusWidget(item.status)),
                           ],
                         ),
                       ),

@@ -52,6 +52,13 @@ class AppStyle {
     ),
     fontWeight: FontWeight.w700,
   );
+  static TextStyle txtRobotoRomanBold24Pr = TextStyle(
+    color: ColorConstant.primaryColor,
+    fontSize: getFontSize(
+      24,
+    ),
+    fontWeight: FontWeight.w700,
+  );
   static TextStyle txtRobotoRomanBold20 = TextStyle(
     color: ColorConstant.black900,
     fontSize: getFontSize(
@@ -61,6 +68,13 @@ class AppStyle {
   );
   static TextStyle txtRobotoRomanMedium14 = TextStyle(
     color: ColorConstant.primaryColor,
+    fontSize: getFontSize(
+      14,
+    ),
+    fontWeight: FontWeight.w500,
+  );
+  static TextStyle txtRobotoRomanMedium14Black = TextStyle(
+    color: Colors.black,
     fontSize: getFontSize(
       14,
     ),
@@ -82,6 +96,13 @@ class AppStyle {
   );
   static TextStyle txtMedium14Black = TextStyle(
     color: Colors.black,
+    fontSize: getFontSize(
+      14,
+    ),
+    fontWeight: FontWeight.w500,
+  );
+  static TextStyle txtMedium14BlackPr = TextStyle(
+    color: ColorConstant.primaryColor,
     fontSize: getFontSize(
       14,
     ),

@@ -1,9 +1,9 @@
 import 'package:hommie/core/app_export.dart';
-import 'package:hommie/core/models/cart_items/datum.dart';
+import 'package:hommie/core/models/cart_items/cart_item_data.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_bloc.dart';
 import 'package:hommie/presentation/cart_screen/cart_bloc/cart_event.dart';
 
-StatefulWidget cartItem(BuildContext context, Datum item) {
+StatefulWidget cartItem(BuildContext context, CartItemData item) {
   final cartBloc = CartBloc();
   return StatefulBuilder(
     builder: (context, setState) {

@@ -1,7 +1,7 @@
-import 'datum.dart';
+import 'cart_item_data.dart';
 
 class CartItems {
-  List<Datum> data;
+  List<CartItemData> data;
   int result;
 
   CartItems({
@@ -10,7 +10,7 @@ class CartItems {
   });
 
   factory CartItems.fromJson(Map<String, dynamic> json) => CartItems(
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<CartItemData>.from(json["data"].map((x) => CartItemData.fromJson(x))),
     result: json["result"],
   );
 

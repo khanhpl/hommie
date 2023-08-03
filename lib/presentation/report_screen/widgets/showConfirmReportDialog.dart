@@ -4,7 +4,7 @@ import 'package:hommie/presentation/order_information_screen/order_bloc/order_ev
 import 'package:hommie/presentation/report_screen/bloc/report_bloc.dart';
 import 'package:hommie/presentation/report_screen/bloc/report_event.dart';
 
-Future<void> showConfirmReportDialog(BuildContext context,String orderCode, String reason) async {
+Future<void> showConfirmReportDialog(BuildContext context,String orderCode, String reason, String reportImg) async {
   final reportBloc = ReportBloc();
   var size = MediaQuery.of(context).size;
   return showDialog<void>(
@@ -93,7 +93,7 @@ Future<void> showConfirmReportDialog(BuildContext context,String orderCode, Stri
                           ),
                         ),
                         onPressed: () {
-                          reportBloc.eventController.sink.add(ConfirmReport(context: context, image: "image", reason: reason, orderCode: orderCode));
+                          reportBloc.eventController.sink.add(ConfirmReport(context: context, image: reportImg, reason: reason, orderCode: orderCode));
                         },
                       ),
                     ),
