@@ -1,11 +1,10 @@
-import 'dart:developer';
+
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive/hive.dart';
 import 'package:hommie/core/app_export.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -89,7 +88,6 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Set the background messaging handler early on, as a named top-level function
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  Hive.initFlutter();
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
 
@@ -125,37 +123,6 @@ class _MyAppState extends State<MyApp> {
   var box = Hive.box('hommieBox');
   bool isGoogleLogin = false;
 
-  // FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-  // Future<void> initDynamicLinks() async {
-  //   dynamicLinks.onLink.listen((dynamicLinkData) {
-  //     print('Aloooooooooooooooooooooooooooooooooooooooooooooooo');
-  //     final Uri uri = dynamicLinkData.link;
-  //     final queryParams = uri.path;
-  //     log("abc ${queryParams}");
-  //     if (queryParams.isNotEmpty) {
-  //       if (queryParams == "/success") {
-  //         // Navigator.pushAndRemoveUntil(
-  //         //     context,
-  //         //     MaterialPageRoute(
-  //         //       builder: (context) => const SuccessScreen(
-  //         //           content:
-  //         //           "Nạp tiền thành công. Cảm ơn bạn đã sử dụng dịch vụ",
-  //         //           buttonName: "Trang chủ",
-  //         //           navigatorPath: '/homeScreen'),
-  //         //     ),
-  //         //         (route) => false);
-  //         print('Thanh toán thành công nè');
-  //       } else {
-  //         // showFailDialog(
-  //         //     context, "Thanh toán không thành công. Vui lòng thử lại sau");
-  //         print('Thanh toán thất bại nè');
-  //       }
-  //     } else {}
-  //   }).onError((error) {
-  //     print('onLink error');
-  //     print(error.message);
-  //   });
-  // }
   @override
   void initState() {
     // TODO: implement initState
